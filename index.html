@@ -3,382 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Kimia - Steven Arthur</title>
+    <title>Latihan ASTS Kimia - Steven Arthur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- MathJax for LaTeX rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
-        
         .option-card:active { transform: scale(0.98); }
-        .glass-header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .watermark { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); font-weight: 800; letter-spacing: 0.2em; color: rgba(226, 232, 240, 0.6); pointer-events: none; z-index: 0; font-size: 10px; text-transform: uppercase; }
+        #overlay.active { opacity: 1; pointer-events: auto; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .nav-unanswered { background: white; border-color: #f1f5f9; color: #cbd5e1; }
+        .nav-answered { background: #4f46e5; border-color: #4f46e5; color: white; }
+        .nav-doubt-only { background: white; border-color: #f59e0b; color: #f59e0b; }
+        .nav-answered-doubt { background: #4f46e5; border-color: #f59e0b; color: white; border-width: 3px; }
+        mjx-container { font-size: 1.1em !important; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 overflow-hidden h-screen flex flex-col">
 
-    <!-- Loading State -->
+    <div class="watermark">Steven Arthur XI-E</div>
+
+    <!-- Loader -->
     <div id="loader" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-        <p class="mt-4 text-slate-400 font-medium animate-pulse">Menyiapkan Lembar Jawaban...</p>
+        <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="mt-4 text-slate-400 text-xs font-bold uppercase tracking-widest">Memuat Soal...</p>
     </div>
 
-    <!-- Main Header -->
+    <!-- Header -->
     <header class="glass-header sticky top-0 z-50 h-16 border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 shrink-0">
         <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                 <i data-lucide="beaker" class="w-5 h-5"></i>
             </div>
-            <div class="hidden sm:block">
-                <h1 class="font-extrabold text-sm tracking-tight text-slate-800">STEVEN ARTHUR</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Kelas XI-E • Kimia</p>
+            <div>
+                <h1 class="font-extrabold text-xs sm:text-sm tracking-tight text-slate-800 uppercase leading-none">Latihan ASTS Kimia</h1>
+                <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Steven Arthur XI-E</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
-            <div id="timer-box" class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full border border-slate-200 font-mono font-bold text-sm text-slate-700">
-                <i data-lucide="clock" class="w-4 h-4 text-indigo-500"></i>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200 font-mono font-bold text-xs text-slate-700">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-500"></i>
                 <span id="timer-display">02:00:00</span>
             </div>
-            <button onclick="toggleSidebar()" class="lg:hidden p-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 shadow-sm">
+            <button onclick="toggleSidebar()" class="lg:hidden p-2 bg-white border border-slate-200 rounded-xl text-slate-600">
                 <i data-lucide="layout-grid" class="w-5 h-5"></i>
             </button>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden relative">
-        <!-- Question Content -->
-        <main class="flex-1 overflow-y-auto custom-scrollbar bg-[#F8FAFC] p-4 lg:p-10">
-            <div id="exam-container" class="max-w-4xl mx-auto space-y-8 pb-24">
-                <!-- Question Card -->
-                <div id="question-card" class="bg-white rounded-3xl border border-slate-200 shadow-sm shadow-slate-200/50 overflow-hidden transition-all duration-300">
-                    <!-- Progress Bar -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-10">
+            <div class="max-w-3xl mx-auto space-y-6 pb-20">
+                <div id="question-card" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="h-1.5 w-full bg-slate-100">
                         <div id="top-progress" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
                     </div>
                     
-                    <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between bg-white/50">
-                        <div class="flex items-center gap-3">
-                            <span id="q-number-tag" class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">SOAL 1</span>
-                            <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest">Dari 75 Soal</span>
-                        </div>
-                        <button onclick="toggleDoubt()" id="btn-doubt" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 text-slate-400 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600">
-                            <i data-lucide="flag" class="w-4 h-4"></i>
-                            <span id="doubt-text">Ragu-ragu</span>
+                    <div class="px-6 py-4 border-b border-slate-50 flex items-center justify-between">
+                        <span id="q-number-tag" class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-[10px] font-black uppercase tracking-wider">SOAL 1</span>
+                        <button onclick="toggleDoubt()" id="btn-doubt" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border border-slate-200 text-slate-400">
+                            <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                            <span id="doubt-text">RAGU-RAGU</span>
                         </button>
                     </div>
 
-                    <div class="p-6 lg:p-10 space-y-8 animate-fade-in">
-                        <!-- Text -->
-                        <div class="space-y-6">
-                            <h2 id="q-text" class="text-xl lg:text-2xl font-bold text-slate-800 leading-snug"></h2>
-                            
-                            <!-- Table Placeholder -->
-                            <div id="q-table-container" class="hidden overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                                <table class="w-full text-sm text-left">
-                                    <thead id="table-head" class="bg-slate-100/80 border-b border-slate-200"></thead>
-                                    <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
-                            </div>
-
-                            <div id="q-sub" class="hidden p-5 bg-indigo-50/50 rounded-2xl border-l-4 border-indigo-500">
-                                <p class="text-indigo-900 font-semibold italic text-base"></p>
-                            </div>
+                    <div id="content-area" class="p-6 lg:p-8 space-y-6 animate-fade-in">
+                        <h2 id="q-text" class="text-lg lg:text-xl font-bold text-slate-800 leading-relaxed"></h2>
+                        
+                        <div id="q-table-container" class="hidden overflow-x-auto rounded-xl border border-slate-200 bg-slate-50">
+                            <table class="w-full text-xs text-left">
+                                <thead id="table-head" class="bg-slate-100 border-b border-slate-200"></thead>
+                                <tbody id="table-body" class="divide-y divide-slate-200"></tbody>
+                            </table>
                         </div>
 
-                        <!-- Options -->
-                        <div id="options-grid" class="grid gap-3.5">
-                            <!-- Options injected here -->
+                        <div id="q-sub" class="hidden p-4 bg-indigo-50/50 rounded-xl border-l-4 border-indigo-500">
+                            <p class="text-indigo-900 font-semibold italic text-sm"></p>
                         </div>
+
+                        <div id="options-grid" class="grid gap-3"></div>
                     </div>
 
-                    <!-- Navigation Footer -->
-                    <div class="px-6 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                        <button onclick="prevQ()" id="btn-prev" class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-800 transition-all disabled:opacity-30 disabled:pointer-events-none">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            KEMBALI
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="prevQ()" id="btn-prev" class="flex items-center gap-1 px-4 py-2 rounded-xl text-[10px] font-black text-slate-400 disabled:opacity-30 uppercase tracking-widest">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i> Kembali
                         </button>
-
-                        <div class="flex gap-3">
-                            <button onclick="nextQ()" id="btn-next" class="flex items-center gap-2 px-8 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-200 hover:bg-black transition-all">
-                                SELANJUTNYA
-                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        <div class="flex gap-2">
+                            <button onclick="nextQ()" id="btn-next" class="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                Lanjut <i data-lucide="chevron-right" class="w-4 h-4"></i>
                             </button>
-                            <button onclick="finishExam()" id="btn-finish" class="hidden flex items-center gap-2 px-8 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-100 hover:bg-emerald-700 transition-all">
-                                SELESAI
-                                <i data-lucide="send" class="w-4 h-4"></i>
+                            <button onclick="finishExam()" id="btn-finish" class="hidden flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                Selesai <i data-lucide="send" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                
-                <p class="text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center justify-center gap-2">
-                    <i data-lucide="info" class="w-3 h-3"></i>
-                    Sistem Ujian Terintegrasi • Kimia XI
-                </p>
             </div>
         </main>
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 right-0 lg:relative translate-x-full lg:translate-x-0 w-80 bg-white border-l border-slate-200 transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-[60] flex flex-col shadow-2xl lg:shadow-none">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-extrabold text-sm text-slate-800 tracking-tight">NAVIGASI SOAL</h3>
-                <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 p-1">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+        <aside id="sidebar" class="fixed inset-y-0 right-0 lg:relative translate-x-full lg:translate-x-0 w-72 bg-white border-l border-slate-200 transition-transform duration-300 z-[70] flex flex-col">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-widest">Navigasi Soal</h3>
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-
-            <div class="flex-1 overflow-y-auto p-5 custom-scrollbar bg-slate-50/30">
-                <div id="grid-nav" class="grid grid-cols-5 gap-2.5">
-                    <!-- Nav buttons injected here -->
-                </div>
+            <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50/30">
+                <div id="grid-nav" class="grid grid-cols-5 gap-2"></div>
             </div>
-
-            <div class="p-6 bg-white border-t border-slate-200 space-y-6">
-                <div class="space-y-3">
-                    <div class="flex justify-between items-end">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Progress</span>
-                        <span id="progress-percent" class="text-sm font-extrabold text-indigo-600">0%</span>
-                    </div>
-                    <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div id="sidebar-progress" class="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-700" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <button onclick="finishExam()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
-                    Kumpulkan Ujian
-                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <div class="p-5 bg-white border-t border-slate-200">
+                <button onclick="finishExam()" class="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center gap-2">
+                    Kumpulkan <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
         </aside>
+
+        <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 z-[60] opacity-0 pointer-events-none transition-all duration-300 lg:hidden"></div>
     </div>
 
-    <!-- Overlay Mobile -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[55] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
-
-    <!-- Modal Result -->
-    <div id="modal-result" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
-        <div class="bg-white rounded-[40px] shadow-2xl w-full max-w-md overflow-hidden transform transition-all animate-fade-in">
-            <div class="bg-gradient-to-br from-indigo-600 to-violet-700 p-10 text-center text-white relative">
-                <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none overflow-hidden">
-                    <svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 5"/></svg>
-                </div>
-                <div class="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-                    <i data-lucide="trophy" class="w-8 h-8 text-white"></i>
-                </div>
-                <h2 class="text-xl font-bold mb-1">Hasil Ujian Anda</h2>
-                <p class="text-indigo-100 text-xs font-medium uppercase tracking-widest opacity-80 mb-6">Chemistry Mastery</p>
-                <div id="final-score" class="text-8xl font-black mb-2 tabular-nums tracking-tighter">0</div>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Point Keseluruhan</p>
+    <!-- Result Modal -->
+    <div id="modal-result" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-sm overflow-hidden transform animate-fade-in text-center">
+            <div class="bg-indigo-600 p-8 text-white">
+                <h2 class="text-lg font-bold">Hasil Akhir</h2>
+                <div id="final-score" class="text-7xl font-black my-2">0</div>
+                <p class="text-[10px] font-bold uppercase tracking-widest opacity-70">Skor Kompetensi</p>
             </div>
-            <div class="p-8 space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 text-center">
-                        <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Benar</span>
-                        <span id="final-correct" class="text-2xl font-black text-emerald-600">0</span>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 text-center">
-                        <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Salah</span>
-                        <span id="final-wrong" class="text-2xl font-black text-rose-500">0</span>
-                    </div>
-                </div>
-                <button onclick="location.reload()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 group">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"></i>
-                    Ulangi Sesi
-                </button>
+            <div class="p-6">
+                <button onclick="location.reload()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest">Ulangi Sesi</button>
             </div>
         </div>
     </div>
 
     <script>
-        const ORIGINAL_DATA = [
-            { id: 1, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus biru", "Lakmus merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion OH– nya lebih banyak daripada ion H+ adalah ....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "C" },
-            { id: 2, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar ......", options: ["2", "6", "7", "8", "10"], answer: "D" },
-            { id: 3, question: "Data trayek pH and perubahan warna beberapa indikator sebagai berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah"]] }, subQuestion: "Warna yang terjadi jika diteteskan larutan dengan pH = 7,8 adalah .....", options: ["metil merah (merah) dan metil jingga (kuning)", "metil jingga (kuning) dan bromtimol biru (kuning)", "bromtimol biru (biru) dan fenolftalein (tak berwarna)", "bromtimol biru (kuning) dan fenolftalein (merah)", "metil merah (kuning) dan bromtimol biru (kuning)"], answer: "C" },
-            { id: 4, question: "Diketahui reaksi sebagai berikut : H2O + CH3COO– ⇄ CH3COOH + OH–", subQuestion: "Pasangan basa- asam konjugasi menurut teori asam-basa Bronsted-Lowry adalah ....", options: ["H2O dan CH3COO–", "CH3COOH dan H2O", "CH3COOH dan H2O", "CH3COO– dan CH3COOH", "CH3COOH dan OH–"], answer: "D" },
-            { id: 5, question: "Perhatikan reaksi berikut : H+ + H2O → H3O+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .....", options: ["ion H+ adalah asam", "H2O bersifat asam", "H2O bersifat netral", "ion H+ bersifat basa", "H3O+ netral"], answer: "A" },
-            { id: 6, question: "Jika 100 ml larutan H2SO4 0,2 M dicampur dengan 100 ml larutan H2SO4 0,3 M, konsentrasi H+ dalam campuran adalah ....", options: ["0,2 M", "0,25 M", "0,3 M", "0,4 M", "0,5 M"], answer: "E" },
-            { id: 7, question: "Larutan asam sulfat memiliki massa jenis 1,8 g/ml. Konsentrasi larutan asam sulfat dengan kadar 49% adalah (Ar O = 16, S = 32, H = 1)", options: ["0,9 M", "1,8 M", "9 M", "2,5 M", "18 M"], answer: "C" },
-            { id: 8, question: "Larutan NaOH dalam air mengandung 10% massa NaOH (Mr = 40), maka molaritas 100 ml NaOH tersebut adalah .....", options: ["1/10", "1/100", "1,1", "1,3", "2,5"], answer: "E" },
-            { id: 9, question: "Sebanyak 0,74 gram Ca(OH)2 dilarutkan dalam 500 ml larutan, pH larutan yang terjadi adalah ..... (Ar Ca = 40, O = 16, H = 1)", options: ["2 – log 4", "2 + log 4", "11 + log 4", "12 + log 4", "12 + log 2"], answer: "D" },
-            { id: 10, question: "Larutan asam asetat mempunyai pH = 3 dan Ka = 10–5 (Mr = 60) maka massa asam asetat dalam 500 ml larutan adalah .... gram", options: ["0,3", "0,6", "3", "6", "30"], answer: "C" },
-            { id: 11, question: "Suatu larutan asam metanoat 0,1 M memiliki pH = 2. Derajat disosiasi asam adalah .....", options: ["0,01", "0,001", "0,1", "0,2", "30"], answer: "C" },
-            { id: 12, question: "Volume air yang harus ditambahkan ke dalam 10 ml larutan HCl yang memiliki pH = 1 agar pH menjadi 2 adalah .....", options: ["10 ml", "20 ml", "90 ml", "100 ml", "990 ml"], answer: "C" },
-            { id: 13, question: "Jika 300 ml larutan HCl 0,1 M dicampur dengan 200 ml H2SO4 0,05 M maka akan diperoleh campuran dengan pH .....", options: ["1", "1 – log 2", "2", "2 – log 5", "3"], answer: "A" },
-            { id: 14, question: "Jika dicampurkan 800 ml HCl 0,01 M dengan 200 ml NaOH 0,02 M, maka pH campurannya .....", options: ["12", "4", "3 + log 4", "3 – log 4", "3"], answer: "D" },
-            { id: 15, question: "Untuk mendapatkan larutan dengan pH = 12 maka ke dalam 700 ml larutan KOH 0,1 M harus ditambahkan larutan H2SO4 0,1 M sebanyak .......", options: ["100 ml", "300 ml", "500 ml", "700 ml", "1000 ml"], answer: "B" },
-            { id: 16, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus Biru", "Lakmus Merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion H+ lebih banyak daripada ion OH– adalah .....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "4 dan 5"], answer: "E" },
-            { id: 17, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar .....", options: ["2", "4", "7", "8", "di atas 10"], answer: "D" },
-            { id: 18, question: "Basa konjugasi dari NH3 adalah .....", options: ["NH4OH", "NH2+", "NH2–", "H2O", "NH4+"], answer: "C" },
-            { id: 19, question: "Diantara spesi berikut yang tidak mungkin sebagai asam Bronsted-Lowry adalah .....", options: ["H2O", "NH4+", "HClO4", "CN–", "H2PO4–"], answer: "D" },
-            { id: 20, question: "NaH larut dalam air menurut persamaan reaksi : H– + H2O → OH– + H2", subQuestion: "Pasangan asam-basa konjugas menurut teori asam basa Bronsted-Lowry adalah .......", options: ["H– dan H2O", "H2O dan OH–", "H2 dan H2O", "H+ dan OH–", "H2 dan OH–"], answer: "B" },
-            { id: 21, question: "Perhatikan reaksi berikut : H+ + NH3 → NH4+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .......", options: ["ion H+ adalah basa", "NH3 bersifat basa", "NH4+ bersifat asam", "ion H+ bersifat netral", "NH3 netral"], answer: "B" },
-            { id: 22, question: "Perhatikan tabel berikut :", hasTable: true, tableData: { headers: ["Asam", "Ka"], rows: [["HA", "6,2 x 10–8"], ["HB", "7,5 x 10–2"], ["HC", "1,2 x 10–2"], ["HD", "1,8 x 10–12"], ["HE", "6,7 x 10–5"]] }, subQuestion: "Berdasarkan tabel di atas urutan kekuatan asam dari yang lemah adalah .......", options: ["HA – HB – HC – HD – HE", "HD – HA – HE – HC – HB", "HC – HB – HD – HE – HA", "HB – HC – HE – HA – HD", "HD – HA – HE – HB – HC"], answer: "B" },
-            { id: 23, question: "Derajat keasaman dari 100 ml H2SO4 10–8 M adalah .......", options: ["6 + log 2", "7 – log 1,2", "7 + log 1,2", "8 – log 2", "8"], answer: "B" },
-            { id: 24, question: "Pada suhu dan tekanan tertentu, harga tetapan kesetimbangan air, Kw = 5.10–13. Pada suhu dan tekanan yang sama jumlah (H+) dan pH larutan Ca(OH)2 0,0005 M adalah ......", options: ["5 x 10–10 M dan pH = 10 – log 5", "10–9 dan pH = 9", "10–3 dan pH = 3", "10–10 dan pH = 10", "5 x 10–10 pH = 10 + log 5"], answer: "A" },
-            { id: 25, question: "Sebanyak 10 mL larutan asam asetat dengan pH = 3 dicampur air 90 ml. Berapakah pH larutan sekarang ? (Ka = 10–5)", options: ["2", "2,5", "3", "3,5", "4"], answer: "D" },
-            { id: 26, question: "pH suatu larutan basa lemah valensi satu = 10, maka konsentrasi ion OH– dalam larutan adalah", options: ["10–10 M", "10–8 M", "10–6 M", "10–5 M", "10–4 M"], answer: "E" },
-            { id: 27, question: "Manakah oksida-oksida berikut yang jika dilarutkan dalam air akan menghasilkan asam ?", options: ["MgO", "SO3", "FeO", "ZnO", "K2O"], answer: "B" },
-            { id: 28, question: "Pada reaksi : NH3(aq) + H2O(l) → NH4+(aq) + OH–(aq)", subQuestion: "Pasangan basa asam konjugasinya adalah ......", options: ["NH3/H2O", "NH4+/OH-", "NH3/OH–", "NH4+/H2O", "NH3/NH4+"], answer: "E" },
-            { id: 29, question: "Ion HCO3– bersifat amfiprotik yakni bisa bersifat asam maupun basa. Reaksi manakah yang menunjukkan HCO3– bersifat basa ?", options: ["HCO3– + H2O → H2CO3 + OH–", "HCO3– + OH– → CO3 2– + H2O", "HCO3– + NH3 → CO3 2– + NH4+", "HCO3– → H+ + CO3 2–", "HCO3– + H2O → CO3 2– + H3O+"], answer: "A" },
-            { id: 30, question: "Air pada suhu 25°C memiliki [H+] = [OH–]. Jika pada suhu tetap ke dalam air ditambahkan asam, maka pernyataan yang benar adalah .......", options: ["[H+] < [OH–]", "[H+] = [OH–]", "[H+] > [OH–]", "pH bertambah besar", "[OH–] bertambah"], answer: "C" },
-            { id: 31, question: "Perhatikan data hasil percobaan titrasi larutan NaOH dengan larutan H2SO4 0,2 M berikut ini :", hasTable: true, tableData: { headers: ["Percobaan", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "15", "7,60"], ["2", "15", "7,50"], ["3", "15", "7,40"]] }, subQuestion: "Dari data tersebut maka konsentrasi larutan NaOH adalah ………", options: ["0,1 M", "0,2 M", "0,3 M", "0,4 M", "0,5 M"], answer: "B" },
-            { id: 32, question: "Sebanyak 2 gram cuplikan NaOH dilarutkan dalam 250 mL air. Kemudian 20 mL dan larutan ini dititrasi dengan larutan HCl 0,1 M dan diperoleh data tertentu.", subQuestion: "Kadar NaOH dalam cuplikan tersebut adalah ……… (Mr NaOH = 40)", options: ["20%", "25%", "40%", "62,5%", "75%"], answer: "D" },
-            { id: 33, question: "Pada percobaan titrasi larutan CH3COOH dengan larutan NaOH menurut reaksi : CH3COOH(aq) + NaOH(aq) → NaCH3COO(aq) + H2O(l)", subQuestion: "Grafik yang menunjukkan hasil titrasi tersebut adalah ……… (Asumsi grafik pH awal asam lemah < 7, titik ekivalen > 7)", options: ["Grafik A (pH naik dari <7 ke >7)", "Grafik B", "Grafik C", "Grafik D", "Grafik E"], answer: "D" },
-            { id: 34, question: "Pada percobaan titrasi larutan HCl dengan larutan NaOH berlangsung reaksi : HCl + NaOH → NaCl + H2O", subQuestion: "Kurva yang menunjukkkan hasil titrasi tersebut adalah ……… (Asumsi Kurva pH awal asam kuat 1, titik ekivalen 7)", options: ["Kurva A", "Kurva B", "Kurva C", "Kurva D", "Kurva E"], answer: "A" },
-            { id: 35, question: "Berikut data hasil titrasi larutan HCl dengan larutan Ba(OH)2 0,2 M :", hasTable: true, tableData: { headers: ["Percobaan", "Volume larutan HCl", "Volume larutan Ba(OH)2"], rows: [["1", "15 mL", "30 mL"], ["2", "15 mL", "29 mL"], ["3", "15 mL", "31 mL"]] }, subQuestion: "Berdasarkan data tersebut, konsentrasi larutan HCl adalah ……… M.", options: ["0,2", "0,4", "0,6", "0,8", "1,0"], answer: "D" },
-            { id: 36, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi asam HX dengan basa kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 20 mL, konsentrasi larutan asam HX itu adalah .......", options: ["0,075 M", "0,125 M", "0,08 M", "0,25 M", "0,10 M"], answer: "B" },
-            { id: 37, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi basa LOH dengan asam kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 10 mL maka konsentrasi larutan basa LOH itu adalah ......", options: ["0,25 M", "0,125 M", "0,1 M", "0,075 M", "0,025 M"], answer: "A" },
-            { id: 38, question: "Data titrasi 10 mL larutan NaOH 0,1 M dengan larutan H2SO4 sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "10", "4"], ["2", "10", "5"], ["3", "10", "6"]] }, subQuestion: "Massa H2SO4 yang bereaksi pada titrasi tersebut adalah ……… (Mr H2SO4 = 98)", options: ["0,049 gram", "9,800 gram", "19,600 gram", "29,400 gram", "98,000 gram"], answer: "A" },
-            { id: 39, question: "Data titrasi 25 mL larutan H2SO4 0,1 M dengan larutan KOH sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume H2SO4 (mL)", "Volume KOH (mL)"], rows: [["1", "25", "21"], ["2", "25", "19"], ["3", "25", "20"]] }, subQuestion: "Massa KOH yang bereaksi adalah …… (Mr KOH = 56)", options: ["0,14 gram", "0,28 gram", "1,4 gram", "2,80 gram", "14,0 gram"], answer: "B" },
-            { id: 40, question: "Titrasi 10 mL larutan HNO3 0,1 M oleh larutan NaOH. Titik akhir titrasi dicapai setelah penambahan 20 mL larutan NaOH.", subQuestion: "Massa NaOH terlarut dalam 20 mL larutan NaOH tersebut adalah ……… (Ar Na = 23; O = 16; H = 1)", options: ["0,04 gram", "0,08 gram", "0,4 gram", "0,8 gram", "4 gram"], answer: "A" },
-            { id: 41, question: "Sebanyak 8 gram kristal NaOH dilarutkan dalam 1 liter larutan HCN 0,3 M. Bila Ka = 2 x 10–5 and Ar Na = 23, maka besarnya pH campuran adalah .....", options: ["5 – log 2", "5", "6 – log 2", "9 + log 2", "10"], answer: "B" },
-            { id: 42, question: "Sebanyak 50 mL larutan NH4OH 0,01 M (Kb = 10–6) dicampur dengan 100 mL larutan NH4Cl 0,5 M. Maka pH campurannya adalah .......", options: ["5", "6", "7", "8", "9"], answer: "B" },
-            { id: 43, question: "Larutan 100 mL CH3COOH 0,15 M dicampurkan dengan 50 mL larutan KOH 0,2 M. (Ka CH3COOH = 10–5), maka pH campuran adalah ......", options: ["3 – log 6", "6 – log 5", "5 – log 3", "6 – log 3", "3 – log 5"], answer: "B" },
-            { id: 44, question: "Sebanyak 100 mL larutan NH3 0,8 M dicampurkan dengan 50 mL larutan HCl 0,2 M. Bila Kb NH3 = 10–4, maka pH campuran adalah .......", options: ["5 – log 3", "4 + log 3", "10 – log 3", "9 + log 3", "10 + log 7"], answer: "E" },
-            { id: 45, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol KOH padat, maka pH larutan menjadi .......", options: ["4 – log 2", "4", "5", "5 – log 2", "9"], answer: "C" },
-            { id: 46, question: "Campuran buffer yang dapat mempertahankan pH darah dalam tubuh kita adalah .......", options: ["HCN/CN–", "HCl/Cl–", "H2CO3/HCO3–", "CH3COOH/CH3COO–", "HCOOH/HCCO–"], answer: "C" },
-            { id: 47, question: "Larutan buffer dapat dibuat dengan mencampurkan 100 mL larutan CH3COOH 0,1 M dengan larutan .......", options: ["80 mL natrium hidroksida 0,1 M", "100 mL natrium hidroksida 0,1 M", "120 mL natrium hidroksida 0,1 M", "50 mL asam klorida 0,1 M", "100 mL asam klorida 0,1 M"], answer: "A" },
-            { id: 48, question: "Campuran larutan di bawah ini yang merupakan campuran buffer adalah .......", options: ["50 mL HCl 0,5 M + 50 mL NaOH 0,1 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,2 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,1 M", "50 mL HCl 0,1 M + 50 mL NaOH 0,5 M"], answer: "C" },
-            { id: 49, question: "Ke dalam 300 mL larutan CH3COOH 0,1 M dicampurkan 50 mL larutan NaOH 0,2 M. (Ka CH3COOH = 10–5), pH larutan akan berubah dari .......", options: ["3 menjadi 13 – log 2", "1 menjadi 5", "3 menjadi 5 – log 2", "1 menjadi 13 – log 2", "3 menjadi 14"], answer: "C" },
-            { id: 50, question: "Bila larutan NH3 and HCl dengan konsentrasi yang sama dicampurkan akan didapat larutan yang mempunyai harga pH = 9. Jika Kb = 10–5, maka perbandingan volume kedua larutan tersebut adalah ..", options: ["1 : 1", "1 : 2", "2 : 1", "3 : 2", "3 : 4"], answer: "C" },
-            { id: 51, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol NaOH padat, maka pH campuran menjadi .......", options: ["3 – log 2", "4", "5 – log 2", "5", "6"], answer: "D" },
-            { id: 52, question: "Ke dalam 1 liter larutan asam asetat 0,1 M yang pH-nya = 3 ditambahkan garam natrium asetat supaya pH-nya menjadi dua kali semula (Ka = 10–5). Garam natrium asetat yang ditambahkan sebanyak .......", options: ["0,0001 mol", "0,001 mol", "0,01 mol", "0,1 mol", "1,0 mol"], answer: "E" },
-            { id: 53, question: "Banyaknya amonium sulfat (NH4)2SO4 yang dilarutkan dalam 200 mL larutan NH3 0,1 M, agar pH-nya = 9 + log 2 adalah (Ar N = 14, S = 32 dan O = 16 serta Kb = 10–5)", options: ["330 mg", "660 mg", "132 mg", "464 mg", "960 mg"], answer: "B" },
-            { id: 54, question: "Volume KOH 0,1 M yang harus ditambahkan ke dalam 50 mL larutan asam asetat 0,3 M agar diperoleh larutan penyangga dengan pH sebesar = 5 – log 2 (Ka = 10–5) adalah .......", options: ["15 mL", "25 mL", "30 mL", "50 mL", "75 mL"], answer: "D" },
-            { id: 55, question: "Besarnya pH campuran dari 100 mL larutan NH3 0,4 M yang dicampurkan dengan 50 mL H2SO4 0,2 M (Kb = 10–5) adalah .......", options: ["5", "5 – log 2", "8 + log 2", "9", "9 + log 2"], answer: "D" },
-            { id: 56, question: "Larutan penyangga merupakan campuran dari ......", options: ["basa kuat dengan asam lemah", "basa kuat dengan garamnya", "basa lemah dengan garamnya", "asam kuat dengan garamnya", "asam lemah dengan basa lemah"], answer: "C" },
-            { id: 57, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "pH Awal", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "2,32", "1,70", "13,01"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "4,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
-            { id: 58, question: "Beberapa campuran : (1) 100 mL HCl 0,1 M + 50 mL NaOH 0,1 M, (2) 100 mL CH3COOH 0,1 M + 50 mL CH3COOH 0,1 M, (3) 100 mL H2SO4 0,1 M + 50 mL NaOH 0,1 M, (4) 100 mL CH3COOH 0,1 + 50 mL NaOH 0,1 M, (5) 100 mL NH4OH 0,1 M + 50 mL HCl 0,1 M", subQuestion: "Campuran yang membentuk penyangga yang bersifat asam adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
-            { id: 59, question: "Sebanyak 20 mL larutan NH3 0,30 M (Kb = 10–5) dicampur dengan 40 mL larutan HCl 0,10 M. pH campuran adalah .......", options: ["1", "3", "4,301", "8,669", "9,301"], answer: "D" },
-            { id: 60, question: "Larutan 25 mL NH4OH 0,2 M (Kb = 10–5) dicampur dengan 25 mL larutan HCl 0,1 M. pH larutan yang terjadi adalah .......", options: ["5", "5,5", "8,5", "9", "13"], answer: "D" },
-            { id: 61, question: "Satu liter larutan yang mengandung 0,1 mol NH3 (Kb = 10–5) dan 0,05 mol (NH4)2SO4 mempunyai pH yaitu .......", options: ["5", "5 – log 2", "9", "9 – log 2", "9 + log 2"], answer: "C" },
-            { id: 62, question: "Pasangan larutan berikut ini yang menghasilkan larutan penyangga adalah ......", options: ["50 mL CH3COOH 0,1 M + 50 mL NaOH 0,25 M", "50 mL CH3COOH 0,1 M + 50 mL HCl 0,1 M", "50 mL HCN 0,05 M + 50 mL NaOH 0,05 M", "50 mL NH4OH 0,1 M + 50 mL HCl 0,05 M", "50 mL NaOH 0,1 M + 50 mL HCl 0,1 M"], answer: "D" },
-            { id: 63, question: "Larutan 20 mL HCOOH 0,3 M (K = 2 x 10–5) dicampur dengan 40 mL larutan KOH 0,1 M. Harga pH larutan yang terjadi adalah .......", options: ["1", "3", "5", "8", "10"], answer: "C" },
-            { id: 64, question: "pH campuran dari 200 mL NH4OH 0,1 M dengan 200 mL NH4Cl 0,1 M adalah (Kb = 10–5)", options: ["5", "7", "9", "11", "13"], answer: "C" },
-            { id: 65, question: "Jika kedalam 200 mL larutan NH4OH 0,2 M dicampurkan larutan NH4Cl dengan volume dan konsentrasi yang sama, maka pH larutan adalah .......", options: ["5", "6", "8", "9", "10"], answer: "D" },
-            { id: 66, question: "Diketahui sistem penyangga : (1) NH4OH dan NH4+, (2) H2CO3 dan HCO3–, (3) CH3COOH dan CH3COO–, (4) H2PO4– dan HPO4 2–", subQuestion: "Yang merupakan sistem penyangga dalam tubuh adalah .......", options: ["1 dan 2", "1 dan 3", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "D" },
-            { id: 67, question: "Kegunaan larutan penyangga dalam bidang biologi adalah ......", options: ["untuk pembuatan obat-obatan", "untuk mengatur pH larutan", "untuk mengoptimalkan kerja", "untuk analisis kualitatif", "untuk analisis kuantitatif"], answer: "A" },
-            { id: 68, question: "Di antara larutan berikut ini yang merupakan garam terhidrolisis parsial bersifat basa adalah .......", options: ["NaNO2", "(NH4)2SO4", "K3PO4", "AlCl3", "CaSO4"], answer: "C" },
-            { id: 69, question: "Diantara garam berikut ini yang terhidrolisis total adalah .......", options: ["Cu(CH3COO)2", "Al2(SO4)3", "Fe(NO3)3", "NH4Cl", "NaCl"], answer: "A" },
-            { id: 70, question: "Dari larutan berikut yang memiliki pH di bawah 7 adalah .......", options: ["(NH4)3PO4", "Ca(CH3COO)2", "NaCN", "NH4Cl", "KClO4"], answer: "D" },
-            { id: 71, question: "Ion yang dapat mengalami hidrolisis adalah .......", options: ["NO3–", "Zn2+", "Ca2+", "Cl–", "H+"], answer: "B" },
-            { id: 72, question: "Diketahui reaksi hidrolisisnya : BH+ + H2O → B + H3O+ Garam yang mengalami hidrolisis seperti di atas adalah .......", options: ["AlF3", "NH4Cl", "Ca(NO3)2", "(NH4)2CO3", "KI"], answer: "B" },
-            { id: 73, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Garam", "Uji Lakmus Merah", "Uji Lakmus Biru"], rows: [["1 (NH4)2SO4", "Biru", "Biru"], ["2 Al2(SO4)3", "Merah", "Biru"], ["3 Ca(NO2)2", "Biru", "Biru"], ["4 NH4F", "Merah", "Merah"], ["5 NH4Br", "Merah", "Merah"]] }, subQuestion: "Garam yang mengalami hidrolisis sesuai dengan hasil uji lakmusnya .......", options: ["1 dan 2", "3 dan 5", "2 dan 4", "1 dan 3", "4 dan 5"], answer: "B" },
-            { id: 74, question: "Peristiwa hidrolisis tidak terjadi pada larutan .......", options: ["AlF3", "Na3PO4", "Li2CO3", "BaBr2", "(NH4)2SO4"], answer: "D" },
-            { id: 75, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "12,32", "12,29", "12,30"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "9,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "B" }
+        const MASTER_DATA = [
+            { id: 1, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus Biru", "Lakmus Merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion $OH^-$ nya lebih banyak daripada ion $H^+$ adalah ....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "C" },
+            { id: 2, question: "Perhatikan data uji indikator berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / Warna", "Hasil Uji"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar ......", options: ["2", "6", "7", "8", "10"], answer: "D" },
+            { id: 3, question: "Data trayek pH dan perubahan warna beberapa indikator:", hasTable: true, tableData: { headers: ["Indikator", "Trayek / Warna"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah"]] }, subQuestion: "Warna yang terjadi jika diteteskan larutan dengan $pH = 7,8$ adalah .....", options: ["metil merah (merah) dan metil jingga (kuning)", "metil jingga (kuning) dan bromtimol biru (kuning)", "bromtimol biru (biru) dan fenolftalein (tak berwarna)", "bromtimol biru (kuning) dan fenolftalein (merah)", "metil merah (kuning) dan bromtimol biru (kuning)"], answer: "C" },
+            { id: 4, question: "Diketahui reaksi sebagai berikut : $H_2O + CH_3COO^- \\rightleftharpoons CH_3COOH + OH^-$", subQuestion: "Pasangan basa-asam konjugasi menurut teori Brønsted-Lowry adalah ....", options: ["$H_2O$ dan $CH_3COO^-$", "$CH_3COOH$ dan $H_2O$", "$CH_3COOH$ dan $H_2O$", "$CH_3COO^-$ dan $CH_3COOH$", "$CH_3COOH$ dan $OH^-$"], answer: "D" },
+            { id: 5, question: "Perhatikan reaksi berikut : $H^+ + H_2O \\to H_3O^+$", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .....", options: ["ion $H^+$ adalah asam", "$H_2O$ bersifat asam", "$H_2O$ bersifat netral", "ion $H^+$ bersifat basa", "$H_3O^+$ netral"], answer: "A" },
+            { id: 6, question: "Jika $100$ ml larutan $H_2SO_4$ $0,2$ M dicampur dengan $100$ ml larutan $H_2SO_4$ $0,3$ M, konsentrasi $[H^+]$ dalam campuran adalah ....", options: ["0,2 M", "0,25 M", "0,3 M", "0,4 M", "0,5 M"], answer: "E" },
+            { id: 7, question: "Larutan asam sulfat memiliki massa jenis $1,8$ g/ml. Konsentrasi larutan $H_2SO_4$ dengan kadar $49\\%$ adalah ($Ar$ $O=16, S=32, H=1$)", options: ["0,9 M", "1,8 M", "9 M", "2,5 M", "18 M"], answer: "C" },
+            { id: 8, question: "Larutan $NaOH$ dalam air mengandung $10\\%$ massa $NaOH$ ($Mr = 40$), maka molaritas $100$ ml $NaOH$ tersebut adalah .....", options: ["1/10", "1/100", "1,1", "1,3", "2,5"], answer: "E" },
+            { id: 9, question: "Sebanyak $0,74$ gram $Ca(OH)_2$ dilarutkan dalam $500$ ml larutan, pH larutan yang terjadi adalah ..... ($Ar$ $Ca=40, O=16, H=1$)", options: ["$2 - \\log 4$", "$2 + \\log 4$", "$11 + \\log 4$", "$12 + \\log 4$", "$12 + \\log 2$"], answer: "D" },
+            { id: 10, question: "Larutan asam asetat mempunyai $pH = 3$ dan $K_a = 10^{-5}$ ($Mr = 60$) maka massa asam asetat dalam $500$ ml larutan adalah .... gram", options: ["0,3", "0,6", "3", "6", "30"], answer: "C" },
+            { id: 11, question: "Suatu larutan asam metanoat $0,1$ M memiliki $pH = 2$. Derajat disosiasi ($\\alpha$) asam tersebut adalah .....", options: ["0,01", "0,001", "0,1", "0,2", "30"], answer: "C" },
+            { id: 12, question: "Volume air yang harus ditambahkan ke dalam $10$ ml larutan $HCl$ ($pH = 1$) agar pH menjadi $2$ adalah .....", options: ["10 ml", "20 ml", "90 ml", "100 ml", "990 ml"], answer: "C" },
+            { id: 13, question: "Jika $300$ ml larutan $HCl$ $0,1$ M dicampur dengan $200$ ml $H_2SO_4$ $0,05$ M maka akan diperoleh campuran dengan pH .....", options: ["1", "$1 - \\log 2$", "2", "$2 - \\log 5$", "3"], answer: "A" },
+            { id: 14, question: "Jika dicampurkan $800$ ml $HCl$ $0,01$ M dengan $200$ ml $NaOH$ $0,02$ M, maka pH campurannya .....", options: ["12", "4", "$3 + \\log 4$", "$3 - \\log 4$", "3"], answer: "D" },
+            { id: 15, question: "Untuk mendapatkan larutan dengan $pH = 12$ maka ke dalam $700$ ml larutan $KOH$ $0,1$ M harus ditambahkan $H_2SO_4$ $0,1$ M sebanyak .......", options: ["100 ml", "300 ml", "500 ml", "700 ml", "1000 ml"], answer: "B" },
+            { id: 16, question: "Perhatikan data pengujian lakmus:", hasTable: true, tableData: { headers: ["Larutan", "Lakmus Biru", "Lakmus Merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion $H^+$ lebih banyak daripada ion $OH^-$ adalah .....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "4 dan 5"], answer: "E" },
+            { id: 17, question: "Hasil uji indikator pada suatu larutan tak dikenal:", hasTable: true, tableData: { headers: ["Indikator", "Trayek / Warna", "Hasil Uji"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar .....", options: ["2", "4", "7", "8", "di atas 10"], answer: "D" },
+            { id: 18, question: "Basa konjugasi dari $NH_3$ adalah .....", options: ["$NH_4OH$", "$NH_2^+$", "$NH_2^-$", "$H_2O$", "$NH_4^+$"], answer: "C" },
+            { id: 19, question: "Diantara spesi berikut yang tidak mungkin bertindak sebagai asam Brønsted-Lowry adalah .....", options: ["$H_2O$", "$NH_4^+$", "$HClO_4$", "$CN^-$", "$H_2PO_4^-$"], answer: "D" },
+            { id: 20, question: "NaH larut dalam air menurut reaksi : $H^- + H_2O \\to OH^- + H_2$", subQuestion: "Pasangan asam-basa konjugasi menurut Brønsted-Lowry adalah .......", options: ["$H^-$ dan $H_2O$", "$H_2O$ dan $OH^-$", "$H_2$ dan $H_2O$", "$H^+$ dan $OH^-$", "$H_2$ dan $OH^-$"], answer: "B" },
+            { id: 21, question: "Perhatikan reaksi berikut : $H^+ + NH_3 \\to NH_4^+$", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .......", options: ["ion $H^+$ adalah basa", "$NH_3$ bersifat basa", "$NH_4^+$ bersifat asam", "ion $H^+$ bersifat netral", "$NH_3$ netral"], answer: "B" },
+            { id: 22, question: "Data konstanta ionisasi asam ($K_a$):", hasTable: true, tableData: { headers: ["Asam", "$K_a$"], rows: [["HA", "$6,2 \\times 10^{-8}$"], ["HB", "$7,5 \\times 10^{-2}$"], ["HC", "$1,2 \\times 10^{-2}$"], ["HD", "$1,8 \\times 10^{-12}$"], ["HE", "$6,7 \\times 10^{-5}$"]] }, subQuestion: "Urutan kekuatan asam dari yang paling lemah adalah .......", options: ["HA – HB – HC – HD – HE", "HD – HA – HE – HC – HB", "HC – HB – HD – HE – HA", "HB – HC – HE – HA – HD", "HD – HA – HE – HB – HC"], answer: "B" },
+            { id: 23, question: "Derajat keasaman ($pH$) dari $100$ ml $H_2SO_4$ $10^{-8}$ M adalah .......", options: ["$6 + \\log 2$", "$7 - \\log 1,2$", "$7 + \\log 1,2$", "$8 - \\log 2$", "8"], answer: "B" },
+            { id: 24, question: "Pada kondisi tertentu, harga $K_w = 5 \\times 10^{-13}$. Jumlah $[H^+]$ dan pH larutan $Ca(OH)_2$ $0,0005$ M adalah ......", options: ["$5 \\times 10^{-10}$ M dan $pH = 10 - \\log 5$", "$10^{-9}$ dan $pH = 9$", "$10^{-3}$ dan $pH = 3$", "$10^{-10}$ dan $pH = 10$", "$5 \\times 10^{-10}$ dan $pH = 10 + \\log 5$"], answer: "A" },
+            { id: 25, question: "Sebanyak $10$ mL larutan asam asetat dengan $pH = 3$ dicampur air $90$ ml. Berapakah pH larutan sekarang ? ($K_a = 10^{-5}$)", options: ["2", "2,5", "3", "3,5", "4"], answer: "D" },
+            { id: 26, question: "pH suatu larutan basa lemah valensi satu $= 10$, maka konsentrasi ion $OH^-$ dalam larutan adalah", options: ["$10^{-10}$ M", "$10^{-8}$ M", "$10^{-6}$ M", "$10^{-5}$ M", "$10^{-4}$ M"], answer: "E" },
+            { id: 27, question: "Manakah oksida-oksida berikut yang jika dilarutkan dalam air akan menghasilkan asam ?", options: ["$MgO$", "$SO_3$", "$FeO$", "$ZnO$", "$K_2O$"], answer: "B" },
+            { id: 28, question: "Pada reaksi : $NH_3(aq) + H_2O(l) \\to NH_4^+(aq) + OH^-(aq)$", subQuestion: "Pasangan basa-asam konjugasinya adalah ......", options: ["$NH_3 / H_2O$", "$NH_4^+ / OH^-$", "$NH_3 / OH^-$", "$NH_4^+ / H_2O$", "$NH_3 / NH_4^+$"], answer: "E" },
+            { id: 29, question: "Ion $HCO_3^-$ bersifat amfiprotik. Reaksi manakah yang menunjukkan $HCO_3^-$ bersifat basa ?", options: ["$HCO_3^- + H_2O \\to H_2CO_3 + OH^-$", "$HCO_3^- + OH^- \\to CO_3^{2-} + H_2O$", "$HCO_3^- + NH_3 \\to CO_3^{2-} - NH_4^+$", "$HCO_3^- \\to H^+ + CO_3^{2-}$", "$HCO_3^- + H_2O \\to CO_3^{2-} + H_3O^+$"], answer: "A" },
+            { id: 30, question: "Air pada suhu $25^\\circ$C memiliki $[H^+] = [OH^-]$. Jika ditambahkan asam, maka pernyataan yang benar adalah .......", options: ["$[H^+] < [OH^-]$ Rose", "$[H^+] = [OH^-]$ Blue", "$[H^+] > [OH^-]$ Green", "pH bertambah besar", "$[OH^-]$ bertambah"], answer: "C" },
+            { id: 31, question: "Data hasil percobaan titrasi $NaOH$ dengan larutan $H_2SO_4$ $0,2$ M:", hasTable: true, tableData: { headers: ["Percobaan", "Vol NaOH (mL)", "Vol $H_2SO_4$ (mL)"], rows: [["1", "15", "7,60"], ["2", "15", "7,50"], ["3", "15", "7,40"]] }, subQuestion: "Konsentrasi larutan $NaOH$ adalah ………", options: ["0,1 M", "0,2 M", "0,3 M", "0,4 M", "0,5 M"], answer: "B" },
+            { id: 32, question: "Sebanyak $2$ gram cuplikan $NaOH$ dilarutkan dalam $250$ mL air. $20$ mL larutan ini dititrasi dengan $HCl$ $0,1$ M.", subQuestion: "Kadar $NaOH$ dalam cuplikan tersebut adalah ……… ($Mr$ $NaOH = 40$)", options: ["20%", "25%", "40%", "62,5%", "75%"], answer: "D" },
+            { id: 33, question: "Pada percobaan titrasi $CH_3COOH$ dengan $NaOH$:", subQuestion: "Grafik yang paling tepat menunjukkan hasil titrasi tersebut adalah ………", options: ["Titik ekivalen $pH > 7$", "Titik ekivalen $pH = 7$", "Titik ekivalen $pH < 7$", "Kurva turun dari basa", "Kurva linear"], answer: "A" },
+            { id: 34, question: "Titrasi $HCl$ dengan $NaOH$ menghasilkan garam $NaCl$.", subQuestion: "Karakteristik kurva titrasi asam kuat-basa kuat yang benar adalah ………", options: ["pH awal $\\approx 1$, ekivalen $pH = 7$", "pH awal $\\approx 3$, ekivalen $pH = 9$", "pH awal $\\approx 7$, ekivalen $pH = 1$", "Kurva mendatar", "Kurva selalu di bawah 7"], answer: "A" },
+            { id: 35, question: "Hasil titrasi $HCl$ dengan $Ba(OH)_2$ $0,2$ M :", hasTable: true, tableData: { headers: ["Percobaan", "Vol HCl", "Vol $Ba(OH)_2$"], rows: [["1", "15 mL", "30 mL"], ["2", "15 mL", "29 mL"], ["3", "15 mL", "31 mL"]] }, subQuestion: "Konsentrasi larutan $HCl$ adalah ……… M.", options: ["0,2", "0,4", "0,6", "0,8", "1,0"], answer: "D" },
+            { id: 36, question: "Jika volume larutan asam $HX$ yang dititrasi sebanyak $20$ mL dengan basa kuat $0,1$ M (titik ekivalen tercapai pada $25$ mL basa):", subQuestion: "Konsentrasi larutan asam $HX$ itu adalah .......", options: ["0,075 M", "0,125 M", "0,08 M", "0,25 M", "0,10 M"], answer: "B" },
+            { id: 37, question: "Volume basa $LOH$ $10$ mL dititrasi dengan asam kuat $0,1$ M (ekivalen di $25$ mL asam):", subQuestion: "Konsentrasi larutan basa $LOH$ tersebut adalah ......", options: ["0,25 M", "0,125 M", "0,1 M", "0,075 M", "0,025 M"], answer: "A" },
+            { id: 38, question: "Titrasi $10$ mL $NaOH$ $0,1$ M dengan $H_2SO_4$ (rata-rata volume asam $5$ mL):", subQuestion: "Massa $H_2SO_4$ yang bereaksi adalah ……… ($Mr = 98$)", options: ["0,049 gram", "9,800 gram", "19,600 gram", "29,400 gram", "98,000 gram"], answer: "A" },
+            { id: 39, question: "Titrasi $25$ mL $H_2SO_4$ $0,1$ M dengan $KOH$ (rata-rata volume basa $20$ mL):", subQuestion: "Massa $KOH$ yang bereaksi adalah …… ($Mr = 56$)", options: ["0,14 gram", "0,28 gram", "1,4 gram", "2,80 gram", "14,0 gram"], answer: "B" },
+            { id: 40, question: "Titrasi $10$ mL $HNO_3$ $0,1$ M oleh $NaOH$ (titik akhir di $20$ mL $NaOH$):", subQuestion: "Massa $NaOH$ terlarut dalam $20$ mL larutan tersebut adalah ……… ($Mr = 40$)", options: ["0,04 gram", "0,08 gram", "0,4 gram", "0,8 gram", "4 gram"], answer: "A" },
+            { id: 41, question: "Sebanyak $8$ gram kristal $NaOH$ dilarutkan dalam $1$ liter larutan $HCN$ $0,3$ M. ($K_a = 2 \\times 10^{-5}, Ar$ $Na = 23$):", subQuestion: "pH campuran tersebut adalah .....", options: ["$5 - \\log 2$", "5", "$6 - \\log 2$", "$9 + \\log 2$", "10"], answer: "B" },
+            { id: 42, question: "Campuran $50$ mL $NH_4OH$ $0,01$ M ($K_b = 10^{-6}$) dengan $100$ mL $NH_4Cl$ $0,5$ M:", subQuestion: "pH campurannya adalah .......", options: ["5", "6", "7", "8", "9"], answer: "B" },
+            { id: 43, question: "Larutan $100$ mL $CH_3COOH$ $0,15$ M + $50$ mL $KOH$ $0,2$ M. ($K_a = 10^{-5}$):", subQuestion: "pH campuran adalah ......", options: ["$3 - \\log 6$", "$6 - \\log 5$", "$5 - \\log 3$", "$6 - \\log 3$", "$3 - \\log 5$"], answer: "B" },
+            { id: 44, question: "Sebanyak $100$ mL $NH_3$ $0,8$ M dicampurkan dengan $50$ mL $HCl$ $0,2$ M. ($K_b = 10^{-4}$):", subQuestion: "pH campuran adalah .......", options: ["$5 - \\log 3$", "$4 + \\log 3$", "$10 - \\log 3$", "$9 + \\log 3$", "$10 + \\log 7$"], answer: "E" },
+            { id: 45, question: "Pada $1$ liter asam lemah $HA$ $0,3$ M ($K_a = 2 \\times 10^{-5}$) ditambah $0,2$ mol $KOH$ padat:", subQuestion: "pH larutan menjadi .......", options: ["$4 - \\log 2$", "4", "5", "$5 - \\log 2$", "9"], answer: "C" },
+            { id: 46, question: "Campuran penyangga yang mempertahankan pH darah adalah .......", options: ["$HCN / CN^-$", "$HCl / Cl^-$", "$H_2CO_3 / HCO_3^-$", "$CH_3COOH / CH_3COO^-$", "$HCOOH / HCOO^-$"], answer: "C" },
+            { id: 47, question: "Larutan penyangga dapat dibuat dengan mencampurkan $100$ mL $CH_3COOH$ $0,1$ M dengan .......", options: ["80 mL NaOH 0,1 M", "100 mL NaOH 0,1 M", "120 mL NaOH 0,1 M", "50 mL HCl 0,1 M", "100 mL HCl 0,1 M"], answer: "A" },
+            { id: 48, question: "Campuran larutan berikut yang merupakan sistem buffer adalah .......", options: ["50 mL HCl 0,5 M + 50 mL NaOH 0,1 M", "50 mL HCl 0,5 M + 50 mL $NH_4OH$ 0,5 M", "50 mL HCl 0,2 M + 50 mL $NH_4OH$ 0,5 M", "50 mL HCl 0,5 M + 50 mL $NH_4OH$ 0,1 M", "50 mL HCl 0,1 M + 50 mL NaOH 0,5 M"], answer: "C" },
+            { id: 49, question: "Ke dalam $300$ mL $CH_3COOH$ $0,1$ M dicampurkan $50$ mL $NaOH$ $0,2$ M. ($K_a = 10^{-5}$):", subQuestion: "pH larutan akan berubah dari .......", options: ["3 menjadi $13 - \\log 2$", "1 menjadi 5", "3 menjadi $5 - \\log 2$", "1 menjadi $13 - \\log 2$", "3 menjadi 14"], answer: "C" },
+            { id: 50, question: "Larutan $NH_3$ dan $HCl$ dengan konsentrasi sama dicampur menghasilkan $pH = 9$ ($K_b = 10^{-5}$):", subQuestion: "Perbandingan volume kedua larutan tersebut adalah ..", options: ["1 : 1", "1 : 2", "2 : 1", "3 : 2", "3 : 4"], answer: "C" },
+            { id: 51, question: "Pada $1$ liter $HA$ $0,3$ M ($K_a = 2 \\times 10^{-5}$) ditambah $0,2$ mol $NaOH$ padat:", subQuestion: "pH campuran menjadi .......", options: ["$3 - \\log 2$", "4", "$5 - \\log 2$", "5", "6"], answer: "D" },
+            { id: 52, question: "Ditambahkan natrium asetat ke $1$ liter $CH_3COOH$ $0,1$ M ($pH=3$) agar pH jadi dua kali semula ($K_a = 10^{-5}$):", subQuestion: "Jumlah garam yang ditambahkan adalah .......", options: ["0,0001 mol", "0,001 mol", "0,01 mol", "0,1 mol", "1,0 mol"], answer: "E" },
+            { id: 53, question: "Massa $(NH_4)_2SO_4$ dalam $200$ mL $NH_3$ $0,1$ M agar $pH = 9 + \\log 2$ ($K_b = 10^{-5}, Mr = 132$):", options: ["330 mg", "660 mg", "132 mg", "464 mg", "960 mg"], answer: "B" },
+            { id: 54, question: "Volume $KOH$ $0,1$ M ditambahkan ke $50$ mL $CH_3COOH$ $0,3$ M agar $pH = 5 - \\log 2$ ($K_a = 10^{-5}$):", options: ["15 mL", "25 mL", "30 mL", "50 mL", "75 mL"], answer: "D" },
+            { id: 55, question: "pH campuran $100$ mL $NH_3$ $0,4$ M dengan $50$ mL $H_2SO_4$ $0,2$ M ($K_b = 10^{-5}$):", options: ["5", "$5 - \\log 2$", "$8 + \\log 2$", "9", "$9 + \\log 2$"], answer: "D" },
+            { id: 56, question: "Larutan penyangga (buffer) merupakan campuran dari ......", options: ["basa kuat dengan asam lemah", "basa kuat dengan garamnya", "basa lemah dengan garamnya", "asam kuat dengan garamnya", "asam lemah dengan basa lemah"], answer: "C" },
+            { id: 57, question: "Data perubahan pH pada beberapa larutan:", hasTable: true, tableData: { headers: ["Larutan", "pH Awal", "Ditambah Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "2,32", "1,70", "13,01"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "4,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang memiliki sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
+            { id: 58, question: "Daftar campuran larutan:", subQuestion: "Campuran yang membentuk penyangga bersifat asam adalah .......", options: ["100 mL HCl + 50 mL NaOH", "100 mL $CH_3COOH$ + 50 mL $CH_3COOH$", "100 mL $H_2SO_4$ + 50 mL NaOH", "100 mL $CH_3COOH$ + 50 mL NaOH", "100 mL $NH_4OH$ + 50 mL HCl"], answer: "D" },
+            { id: 59, question: "Campuran $20$ mL $NH_3$ $0,3$ M ($K_b = 10^{-5}$) dengan $40$ mL $HCl$ $0,1$ M:", subQuestion: "pH campuran adalah .......", options: ["1", "3", "4,301", "8,669", "9,301"], answer: "D" },
+            { id: 60, question: "Campuran $25$ mL $NH_4OH$ $0,2$ M ($K_b = 10^{-5}$) dengan $25$ mL $HCl$ $0,1$ M:", options: ["5", "5,5", "8,5", "9", "13"], answer: "D" },
+            { id: 61, question: "Satu liter larutan mengandung $0,1$ mol $NH_3$ and $0,05$ mol $(NH_4)_2SO_4$ ($K_b = 10^{-5}$):", options: ["5", "$5 - \\log 2$", "9", "$9 - \\log 2$", "$9 + \\log 2$"], answer: "C" },
+            { id: 62, question: "Pasangan larutan yang menghasilkan sistem penyangga adalah ......", options: ["$CH_3COOH$ 0,1 M + NaOH 0,25 M", "$CH_3COOH$ 0,1 M + HCl 0,1 M", "HCN 0,05 M + NaOH 0,05 M", "$NH_4OH$ 0,1 M + HCl 0,05 M", "NaOH 0,1 M + HCl 0,1 M"], answer: "D" },
+            { id: 63, question: "Campuran $20$ mL $HCOOH$ $0,3$ M ($K_a = 2 \\times 10^{-5}$) dengan $40$ mL $KOH$ $0,1$ M:", options: ["1", "3", "5", "8", "10"], answer: "C" },
+            { id: 64, question: "pH campuran dari $200$ mL $NH_4OH$ $0,1$ M dengan $200$ mL $NH_4Cl$ $0,1$ M ($K_b = 10^{-5}$):", options: ["5", "7", "9", "11", "13"], answer: "C" },
+            { id: 65, question: "Jika ke dalam $200$ mL $NH_4OH$ $0,2$ M dicampurkan $NH_4Cl$ dengan volume dan konsentrasi sama:", options: ["5", "6", "8", "9", "10"], answer: "D" },
+            { id: 66, question: "Sistem penyangga dalam tubuh manusia meliputi .......", options: ["$NH_4OH$ dan $NH_4^+$", "Garam dapur", "$H_2CO_3$ / $HCO_3^-$ dan $H_2PO_4^-$ / $HPO_4^{2-}$", "Asam cuka", "Asam lambung"], answer: "C" },
+            { id: 67, question: "Fungsi utama larutan penyangga dalam obat-obatan adalah ......", options: ["Menjaga pH agar stabil", "Meningkatkan kelarutan", "Sebagai pemanis", "Sebagai pengawet", "Mempercepat reaksi"], answer: "A" },
+            { id: 68, question: "Garam yang terhidrolisis parsial dan bersifat basa adalah .......", options: ["$NaNO_2$", "$(NH_4)_2SO_4$", "$K_3PO_4$", "$AlCl_3$", "$CaSO_4$"], answer: "C" },
+            { id: 69, question: "Diantara garam berikut yang mengalami hidrolisis total adalah .......", options: ["$Cu(CH_3COO)_2$", "$Al_2(SO_4)_3$", "$Fe(NO_3)_3$", "$NH_4Cl$", "$NaCl$"], answer: "A" },
+            { id: 70, question: "Garam yang memiliki pH larutan $< 7$ (asam) adalah .......", options: ["$(NH_4)_3PO_4$", "$Ca(CH_3COO)_2$", "$NaCN$", "$NH_4Cl$", "$KClO_4$"], answer: "D" },
+            { id: 71, question: "Kation/Anion yang dapat mengalami hidrolisis adalah .......", options: ["$NO_3^-$", "$Zn^{2+}$", "$Ca^{2+}$", "$Cl^-$", "$K^+$"], answer: "B" },
+            { id: 72, question: "Reaksi hidrolisis: $BH^+ + H_2O \\to B + H_3O^+$. Contoh garamnya adalah .......", options: ["$AlF_3$", "$NH_4Cl$", "$Ca(NO_3)_2$", "$(NH_4)_2CO_3$", "$KI$"], answer: "B" },
+            { id: 73, question: "Uji lakmus pada beberapa garam:", hasTable: true, tableData: { headers: ["Garam", "Lakmus Merah", "Lakmus Biru"], rows: [["1 (NH4)2SO4", "Merah", "Merah"], ["2 Al2(SO4)3", "Merah", "Merah"], ["3 Ca(NO2)2", "Biru", "Biru"], ["4 NH4F", "Bervariasi", "Bervariasi"], ["5 NH4Br", "Merah", "Merah"]] }, subQuestion: "Garam yang bersifat asam adalah .......", options: ["1, 2, 5", "3 saja", "1 dan 3", "2 dan 3", "Semua basa"], answer: "A" },
+            { id: 74, question: "Peristiwa hidrolisis tidak terjadi pada larutan yang berasal dari asam kuat dan basa kuat, contohnya .......", options: ["$AlF_3$", "$Na_3PO_4$", "$Li_2CO_3$", "$BaBr_2$", "$(NH_4)_2SO_4$"], answer: "D" },
+            { id: 75, question: "Larutan penyangga yang mampu mempertahankan pH pada kisaran basa adalah .......", options: ["$CH_3COOH / CH_3COONa$", "$NH_3 / NH_4Cl$", "$HCl / NaCl$", "$H_2SO_4 / Na_2SO_4$", "$NaOH / NaCl$"], answer: "B" }
         ];
 
-        let examData = [];
+        let questions = [];
         let currentIdx = 0;
         let answers = {};
         let doubts = {};
-        let timeLeft = 7200; // 2 hours
+        let timeLeft = 7200;
         let timerInterval;
 
-        // Shuffle questions
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         function init() {
-            examData = [...ORIGINAL_DATA].sort(() => Math.random() - 0.5);
+            questions = shuffle([...MASTER_DATA]);
             renderSidebar();
             updateQuestion();
             startTimer();
-            
             setTimeout(() => {
                 document.getElementById('loader').classList.add('opacity-0');
                 setTimeout(() => document.getElementById('loader').remove(), 500);
             }, 1000);
-
             lucide.createIcons();
         }
 
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    finishExam();
-                }
-                const h = Math.floor(timeLeft / 3600);
-                const m = Math.floor((timeLeft % 3600) / 60);
-                const s = timeLeft % 60;
-                document.getElementById('timer-display').textContent = 
-                    `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                
-                if (timeLeft < 300) {
-                    document.getElementById('timer-box').classList.add('text-red-600', 'bg-red-50', 'border-red-200', 'animate-pulse');
-                }
+                if (timeLeft <= 0) { clearInterval(timerInterval); finishExam(); }
+                const h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft % 3600) / 60), s = timeLeft % 60;
+                document.getElementById('timer-display').textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             }, 1000);
         }
 
         function updateQuestion() {
-            const q = examData[currentIdx];
-            const card = document.getElementById('question-card');
-            
-            // UI Tags
+            const q = questions[currentIdx];
             document.getElementById('q-number-tag').textContent = `SOAL ${currentIdx + 1}`;
             document.getElementById('q-text').textContent = q.question;
             
-            // Sub Question
             const sub = document.getElementById('q-sub');
             if(q.subQuestion) {
                 sub.classList.remove('hidden');
                 sub.querySelector('p').textContent = q.subQuestion;
-            } else {
-                sub.classList.add('hidden');
-            }
+            } else { sub.classList.add('hidden'); }
 
-            // Table
             const tableContainer = document.getElementById('q-table-container');
             if(q.hasTable) {
                 tableContainer.classList.remove('hidden');
-                const thead = document.getElementById('table-head');
-                const tbody = document.getElementById('table-body');
-                
-                thead.innerHTML = `<tr>${q.tableData.headers.map(h => `<th class="px-4 py-3 font-bold text-slate-500 uppercase text-[10px] tracking-widest">${h}</th>`).join('')}</tr>`;
-                tbody.innerHTML = q.tableData.rows.map(row => `<tr>${row.map(c => `<td class="px-4 py-3 text-slate-600 font-medium">${c}</td>`).join('')}</tr>`).join('');
-            } else {
-                tableContainer.classList.add('hidden');
-            }
+                document.getElementById('table-head').innerHTML = `<tr>${q.tableData.headers.map(h => `<th class="px-3 py-2 font-bold text-slate-500 uppercase text-[9px] tracking-wider">${h}</th>`).join('')}</tr>`;
+                document.getElementById('table-body').innerHTML = q.tableData.rows.map(row => `<tr>${row.map(c => `<td class="px-3 py-2 text-slate-600 font-medium">${c}</td>`).join('')}</tr>`).join('');
+            } else { tableContainer.classList.add('hidden'); }
 
-            // Options
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             q.options.forEach((opt, i) => {
                 const char = String.fromCharCode(65 + i);
                 const isSelected = answers[currentIdx] === char;
                 const btn = document.createElement('button');
-                btn.className = `option-card group flex items-center gap-5 p-5 rounded-3xl border-2 transition-all text-left ${
-                    isSelected ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50'
-                }`;
+                btn.className = `option-card flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${isSelected ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 bg-white'}`;
                 btn.onclick = () => selectOption(char);
-                btn.innerHTML = `
-                    <div class="w-10 h-10 shrink-0 rounded-2xl flex items-center justify-center font-extrabold text-sm transition-all ${
-                        isSelected ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-400 border border-slate-200'
-                    }">${char}</div>
-                    <span class="text-[15px] font-bold flex-1 ${isSelected ? 'text-indigo-950' : 'text-slate-600'}">${opt}</span>
-                    ${isSelected ? '<i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-600"></i>' : ''}
-                `;
+                btn.innerHTML = `<div class="w-8 h-8 shrink-0 rounded-xl flex items-center justify-center font-black text-xs ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'}">${char}</div><span class="text-sm font-bold flex-1">${opt}</span>`;
                 optionsGrid.appendChild(btn);
             });
 
-            // Nav Buttons
             document.getElementById('btn-prev').disabled = currentIdx === 0;
-            if(currentIdx === examData.length - 1) {
+            if(currentIdx === questions.length - 1) {
                 document.getElementById('btn-next').classList.add('hidden');
                 document.getElementById('btn-finish').classList.remove('hidden');
             } else {
@@ -386,137 +311,62 @@
                 document.getElementById('btn-finish').classList.add('hidden');
             }
 
-            // Doubt state
             const btnDoubt = document.getElementById('btn-doubt');
-            if(doubts[currentIdx]) {
-                btnDoubt.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-amber-500 bg-amber-500 text-white shadow-lg shadow-amber-100";
-                document.getElementById('doubt-text').textContent = "Ditandai Ragu";
-            } else {
-                btnDoubt.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 text-slate-400 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600";
-                document.getElementById('doubt-text').textContent = "Ragu-ragu";
-            }
+            btnDoubt.className = doubts[currentIdx] ? "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black border border-amber-500 bg-amber-500 text-white" : "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black border border-slate-200 text-slate-400";
+            document.getElementById('doubt-text').textContent = doubts[currentIdx] ? "DITANDAI RAGU" : "RAGU-RAGU";
 
             updateProgress();
             renderSidebar();
-            lucide.createIcons();
             
-            // Animation reset
-            const container = document.querySelector('.animate-fade-in');
-            container.style.animation = 'none';
-            container.offsetHeight; 
-            container.style.animation = null;
-        }
-
-        function selectOption(char) {
-            answers[currentIdx] = char;
-            updateQuestion();
-        }
-
-        function toggleDoubt() {
-            doubts[currentIdx] = !doubts[currentIdx];
-            updateQuestion();
-        }
-
-        function nextQ() {
-            if(currentIdx < examData.length - 1) {
-                currentIdx++;
-                updateQuestion();
-                scrollToTop();
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
             }
         }
 
-        function prevQ() {
-            if(currentIdx > 0) {
-                currentIdx--;
-                updateQuestion();
-                scrollToTop();
-            }
-        }
-
-        function jumpTo(idx) {
-            currentIdx = idx;
-            updateQuestion();
-            if(window.innerWidth < 1024) toggleSidebar();
-            scrollToTop();
-        }
-
-        function scrollToTop() {
-            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
+        function selectOption(char) { answers[currentIdx] = char; updateQuestion(); }
+        function toggleDoubt() { doubts[currentIdx] = !doubts[currentIdx]; updateQuestion(); }
+        function nextQ() { if(currentIdx < questions.length - 1) { currentIdx++; updateQuestion(); scrollToTop(); } }
+        function prevQ() { if(currentIdx > 0) { currentIdx--; updateQuestion(); scrollToTop(); } }
+        function jumpTo(idx) { currentIdx = idx; updateQuestion(); if(window.innerWidth < 1024) toggleSidebar(); scrollToTop(); }
+        function scrollToTop() { document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' }); }
+        
         function updateProgress() {
-            const answeredCount = Object.keys(answers).length;
-            const progress = (answeredCount / examData.length) * 100;
+            const progress = (Object.keys(answers).length / questions.length) * 100;
             document.getElementById('top-progress').style.width = `${progress}%`;
-            document.getElementById('sidebar-progress').style.width = `${progress}%`;
-            document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
         }
 
         function renderSidebar() {
             const grid = document.getElementById('grid-nav');
             grid.innerHTML = '';
-            examData.forEach((_, i) => {
+            questions.forEach((_, i) => {
                 const btn = document.createElement('button');
-                const isAnswered = answers[i];
-                const isDoubt = doubts[i];
-                const isActive = currentIdx === i;
-                
-                btn.className = `h-11 rounded-xl text-[11px] font-black transition-all border-2 ${
-                    isActive ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-4 ring-indigo-50' :
-                    isDoubt ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-100' :
-                    isAnswered ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100' :
-                    'bg-white border-slate-100 text-slate-300 hover:border-slate-300 hover:text-slate-500'
-                }`;
-                btn.textContent = i + 1;
-                btn.onclick = () => jumpTo(i);
+                const isAns = answers[i] !== undefined, isDbt = doubts[i] === true, isAct = currentIdx === i;
+                let cls = "h-10 rounded-xl text-[10px] font-black transition-all border-2 ";
+                if (isAns && isDbt) cls += "nav-answered-doubt ";
+                else if (isAns) cls += "nav-answered ";
+                else if (isDbt) cls += "nav-doubt-only ";
+                else cls += "nav-unanswered ";
+                if (isAct) cls += "ring-2 ring-indigo-400 ring-offset-2 ";
+                btn.className = cls; btn.textContent = i + 1; btn.onclick = () => jumpTo(i);
                 grid.appendChild(btn);
             });
         }
 
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const isClosed = sidebar.classList.contains('translate-x-full');
-            
-            if(isClosed) {
-                sidebar.classList.remove('translate-x-full');
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-            }
+            const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('translate-x-full');
+            overlay.classList.toggle('active');
         }
 
         function finishExam() {
             clearInterval(timerInterval);
             let correct = 0;
-            examData.forEach((q, i) => {
-                if(answers[i] === q.answer) correct++;
-            });
-
-            const score = (correct / examData.length) * 100;
-            
-            document.getElementById('final-score').textContent = Math.round(score);
-            document.getElementById('final-correct').textContent = correct;
-            document.getElementById('final-wrong').textContent = examData.length - correct;
-            
+            questions.forEach((q, i) => { if(answers[i] === q.answer) correct++; });
+            document.getElementById('final-score').textContent = Math.round((correct / questions.length) * 100);
             document.getElementById('modal-result').classList.remove('hidden');
-            
-            // Score animation
-            let currentDisplay = 0;
-            const step = score / 50;
-            const interval = setInterval(() => {
-                currentDisplay += step;
-                if(currentDisplay >= score) {
-                    document.getElementById('final-score').textContent = Math.round(score);
-                    clearInterval(interval);
-                } else {
-                    document.getElementById('final-score').textContent = Math.round(currentDisplay);
-                }
-            }, 20);
         }
 
-        // Initialize App
         window.onload = init;
     </script>
 </body>
