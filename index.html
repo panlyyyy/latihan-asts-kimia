@@ -1,308 +1,315 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBT Latihan Kimia XI - 75 Soal Lengkap</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .doubt-ring { box-shadow: 0 0 0 4px #f59e0b !important; border-color: white !important; }
-    </style>
-</head>
-<body class="bg-slate-100">
-    <div id="root"></div>
+import React, { useState, useEffect } from 'react';
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+const originalExamData = [
+    { id: 1, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus biru", "Lakmus merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion OH– nya lebih banyak daripada ion H+ adalah ....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "C" },
+    { id: 2, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar ......", options: ["2", "6", "7", "8", "10"], answer: "D" },
+    { id: 3, question: "Data trayek pH and perubahan warna beberapa indikator sebagai berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah"]] }, subQuestion: "Warna yang terjadi jika diteteskan larutan dengan pH = 7,8 adalah .....", options: ["metil merah (merah) dan metil jingga (kuning)", "metil jingga (kuning) dan bromtimol biru (kuning)", "bromtimol biru (biru) dan fenolftalein (tak berwarna)", "bromtimol biru (kuning) dan fenolftalein (merah)", "metil merah (kuning) dan bromtimol biru (kuning)"], answer: "C" },
+    { id: 4, question: "Diketahui reaksi sebagai berikut : H2O + CH3COO– ⇄ CH3COOH + OH–", subQuestion: "Pasangan basa- asam konjugasi menurut teori asam-basa Bronsted-Lowry adalah ....", options: ["H2O dan CH3COO–", "CH3COOH dan H2O", "CH3COOH dan H2O", "CH3COO– dan CH3COOH", "CH3COOH dan OH–"], answer: "D" },
+    { id: 5, question: "Perhatikan reaksi berikut : H+ + H2O → H3O+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .....", options: ["ion H+ adalah asam", "H2O bersifat asam", "H2O bersifat netral", "ion H+ bersifat basa", "H3O+ netral"], answer: "A" },
+    { id: 6, question: "Jika 100 ml larutan H2SO4 0,2 M dicampur dengan 100 ml larutan H2SO4 0,3 M, konsentrasi H+ dalam campuran adalah ....", options: ["0,2 M", "0,25 M", "0,3 M", "0,4 M", "0,5 M"], answer: "E" },
+    { id: 7, question: "Larutan asam sulfat memiliki massa jenis 1,8 g/ml. Konsentrasi larutan asam sulfat dengan kadar 49% adalah (Ar O = 16, S = 32, H = 1)", options: ["0,9 M", "1,8 M", "9 M", "2,5 M", "18 M"], answer: "C" },
+    { id: 8, question: "Larutan NaOH dalam air mengandung 10% massa NaOH (Mr = 40), maka molaritas 100 ml NaOH tersebut adalah .....", options: ["1/10", "1/100", "1,1", "1,3", "2,5"], answer: "E" },
+    { id: 9, question: "Sebanyak 0,74 gram Ca(OH)2 dilarutkan dalam 500 ml larutan, pH larutan yang terjadi adalah ..... (Ar Ca = 40, O = 16, H = 1)", options: ["2 – log 4", "2 + log 4", "11 + log 4", "12 + log 4", "12 + log 2"], answer: "D" },
+    { id: 10, question: "Larutan asam asetat mempunyai pH = 3 dan Ka = 10–5 (Mr = 60) maka massa asam asetat dalam 500 ml larutan adalah .... gram", options: ["0,3", "0,6", "3", "6", "30"], answer: "C" },
+    { id: 11, question: "Suatu larutan asam metanoat 0,1 M memiliki pH = 2. Derajat disosiasi asam adalah .....", options: ["0,01", "0,001", "0,1", "0,2", "30"], answer: "C" },
+    { id: 12, question: "Volume air yang harus ditambahkan ke dalam 10 ml larutan HCl yang memiliki pH = 1 agar pH menjadi 2 adalah .....", options: ["10 ml", "20 ml", "90 ml", "100 ml", "990 ml"], answer: "C" },
+    { id: 13, question: "Jika 300 ml larutan HCl 0,1 M dicampur dengan 200 ml H2SO4 0,05 M maka akan diperoleh campuran dengan pH .....", options: ["1", "1 – log 2", "2", "2 – log 5", "3"], answer: "A" },
+    { id: 14, question: "Jika dicampurkan 800 ml HCl 0,01 M dengan 200 ml NaOH 0,02 M, maka pH campurannya .....", options: ["12", "4", "3 + log 4", "3 – log 4", "3"], answer: "D" },
+    { id: 15, question: "Untuk mendapatkan larutan dengan pH = 12 maka ke dalam 700 ml larutan KOH 0,1 M harus ditambahkan larutan H2SO4 0,1 M sebanyak .......", options: ["100 ml", "300 ml", "500 ml", "700 ml", "1000 ml"], answer: "B" },
+    { id: 16, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus Biru", "Lakmus Merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion H+ lebih banyak daripada ion OH– adalah .....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "4 dan 5"], answer: "E" },
+    { id: 17, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar .....", options: ["2", "4", "7", "8", "di atas 10"], answer: "D" },
+    { id: 18, question: "Basa konjugasi dari NH3 adalah .....", options: ["NH4OH", "NH2+", "NH2–", "H2O", "NH4+"], answer: "C" },
+    { id: 19, question: "Diantara spesi berikut yang tidak mungkin sebagai asam Bronsted-Lowry adalah .....", options: ["H2O", "NH4+", "HClO4", "CN–", "H2PO4–"], answer: "D" },
+    { id: 20, question: "NaH larut dalam air menurut persamaan reaksi : H– + H2O → OH– + H2", subQuestion: "Pasangan asam-basa konjugas menurut teori asam basa Bronsted-Lowry adalah .......", options: ["H– dan H2O", "H2O dan OH–", "H2 dan H2O", "H+ dan OH–", "H2 dan OH–"], answer: "B" },
+    { id: 21, question: "Perhatikan reaksi berikut : H+ + NH3 → NH4+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .......", options: ["ion H+ adalah basa", "NH3 bersifat basa", "NH4+ bersifat asam", "ion H+ bersifat netral", "NH3 netral"], answer: "B" },
+    { id: 22, question: "Perhatikan tabel berikut :", hasTable: true, tableData: { headers: ["Asam", "Ka"], rows: [["HA", "6,2 x 10–8"], ["HB", "7,5 x 10–2"], ["HC", "1,2 x 10–2"], ["HD", "1,8 x 10–12"], ["HE", "6,7 x 10–5"]] }, subQuestion: "Berdasarkan tabel di atas urutan kekuatan asam dari yang lemah adalah .......", options: ["HA – HB – HC – HD – HE", "HD – HA – HE – HC – HB", "HC – HB – HD – HE – HA", "HB – HC – HE – HA – HD", "HD – HA – HE – HB – HC"], answer: "B" },
+    { id: 23, question: "Derajat keasaman dari 100 ml H2SO4 10–8 M adalah .......", options: ["6 + log 2", "7 – log 1,2", "7 + log 1,2", "8 – log 2", "8"], answer: "B" },
+    { id: 24, question: "Pada suhu dan tekanan tertentu, harga tetapan kesetimbangan air, Kw = 5.10–13. Pada suhu dan tekanan yang sama jumlah (H+) dan pH larutan Ca(OH)2 0,0005 M adalah ......", options: ["5 x 10–10 M dan pH = 10 – log 5", "10–9 dan pH = 9", "10–3 dan pH = 3", "10–10 dan pH = 10", "5 x 10–10 pH = 10 + log 5"], answer: "A" },
+    { id: 25, question: "Sebanyak 10 mL larutan asam asetat dengan pH = 3 dicampur air 90 ml. Berapakah pH larutan sekarang ? (Ka = 10–5)", options: ["2", "2,5", "3", "3,5", "4"], answer: "D" },
+    { id: 26, question: "pH suatu larutan basa lemah valensi satu = 10, maka konsentrasi ion OH– dalam larutan adalah", options: ["10–10 M", "10–8 M", "10–6 M", "10–5 M", "10–4 M"], answer: "E" },
+    { id: 27, question: "Manakah oksida-oksida berikut yang jika dilarutkan dalam air akan menghasilkan asam ?", options: ["MgO", "SO3", "FeO", "ZnO", "K2O"], answer: "B" },
+    { id: 28, question: "Pada reaksi : NH3(aq) + H2O(l) → NH4+(aq) + OH–(aq)", subQuestion: "Pasangan basa asam konjugasinya adalah ......", options: ["NH3/H2O", "NH4+/OH-", "NH3/OH–", "NH4+/H2O", "NH3/NH4+"], answer: "E" },
+    { id: 29, question: "Ion HCO3– bersifat amfiprotik yakni bisa bersifat asam maupun basa. Reaksi manakah yang menunjukkan HCO3– bersifat basa ?", options: ["HCO3– + H2O → H2CO3 + OH–", "HCO3– + OH– → CO3 2– + H2O", "HCO3– + NH3 → CO3 2– + NH4+", "HCO3– → H+ + CO3 2–", "HCO3– + H2O → CO3 2– + H3O+"], answer: "A" },
+    { id: 30, question: "Air pada suhu 25°C memiliki [H+] = [OH–]. Jika pada suhu tetap ke dalam air ditambahkan asam, maka pernyataan yang benar adalah .......", options: ["[H+] < [OH–]", "[H+] = [OH–]", "[H+] > [OH–]", "pH bertambah besar", "[OH–] bertambah"], answer: "C" },
+    { id: 31, question: "Perhatikan data hasil percobaan titrasi larutan NaOH dengan larutan H2SO4 0,2 M berikut ini :", hasTable: true, tableData: { headers: ["Percobaan", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "15", "7,60"], ["2", "15", "7,50"], ["3", "15", "7,40"]] }, subQuestion: "Dari data tersebut maka konsentrasi larutan NaOH adalah ………", options: ["0,1 M", "0,2 M", "0,3 M", "0,4 M", "0,5 M"], answer: "B" },
+    { id: 32, question: "Sebanyak 2 gram cuplikan NaOH dilarutkan dalam 250 mL air. Kemudian 20 mL dan larutan ini dititrasi dengan larutan HCl 0,1 M dan diperoleh data tertentu.", subQuestion: "Kadar NaOH dalam cuplikan tersebut adalah ……… (Mr NaOH = 40)", options: ["20%", "25%", "40%", "62,5%", "75%"], answer: "D" },
+    { id: 33, question: "Pada percobaan titrasi larutan CH3COOH dengan larutan NaOH menurut reaksi : CH3COOH(aq) + NaOH(aq) → NaCH3COO(aq) + H2O(l)", subQuestion: "Grafik yang menunjukkan hasil titrasi tersebut adalah ……… (Asumsi grafik pH awal asam lemah < 7, titik ekivalen > 7)", options: ["Grafik A (pH naik dari <7 ke >7)", "Grafik B", "Grafik C", "Grafik D", "Grafik E"], answer: "D" },
+    { id: 34, question: "Pada percobaan titrasi larutan HCl dengan larutan NaOH berlangsung reaksi : HCl + NaOH → NaCl + H2O", subQuestion: "Kurva yang menunjukkkan hasil titrasi tersebut adalah ……… (Asumsi Kurva pH awal asam kuat 1, titik ekivalen 7)", options: ["Kurva A", "Kurva B", "Kurva C", "Kurva D", "Kurva E"], answer: "A" },
+    { id: 35, question: "Berikut data hasil titrasi larutan HCl dengan larutan Ba(OH)2 0,2 M :", hasTable: true, tableData: { headers: ["Percobaan", "Volume larutan HCl", "Volume larutan Ba(OH)2"], rows: [["1", "15 mL", "30 mL"], ["2", "15 mL", "29 mL"], ["3", "15 mL", "31 mL"]] }, subQuestion: "Berdasarkan data tersebut, konsentrasi larutan HCl adalah ……… M.", options: ["0,2", "0,4", "0,6", "0,8", "1,0"], answer: "D" },
+    { id: 36, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi asam HX dengan basa kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 20 mL, konsentrasi larutan asam HX itu adalah .......", options: ["0,075 M", "0,125 M", "0,08 M", "0,25 M", "0,10 M"], answer: "B" },
+    { id: 37, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi basa LOH dengan asam kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 10 mL maka konsentrasi larutan basa LOH itu adalah ......", options: ["0,25 M", "0,125 M", "0,1 M", "0,075 M", "0,025 M"], answer: "A" },
+    { id: 38, question: "Data titrasi 10 mL larutan NaOH 0,1 M dengan larutan H2SO4 sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "10", "4"], ["2", "10", "5"], ["3", "10", "6"]] }, subQuestion: "Massa H2SO4 yang bereaksi pada titrasi tersebut adalah ……… (Mr H2SO4 = 98)", options: ["0,049 gram", "9,800 gram", "19,600 gram", "29,400 gram", "98,000 gram"], answer: "A" },
+    { id: 39, question: "Data titrasi 25 mL larutan H2SO4 0,1 M dengan larutan KOH sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume H2SO4 (mL)", "Volume KOH (mL)"], rows: [["1", "25", "21"], ["2", "25", "19"], ["3", "25", "20"]] }, subQuestion: "Massa KOH yang bereaksi adalah …… (Mr KOH = 56)", options: ["0,14 gram", "0,28 gram", "1,4 gram", "2,80 gram", "14,0 gram"], answer: "B" },
+    { id: 40, question: "Titrasi 10 mL larutan HNO3 0,1 M oleh larutan NaOH. Titik akhir titrasi dicapai setelah penambahan 20 mL larutan NaOH.", subQuestion: "Massa NaOH terlarut dalam 20 mL larutan NaOH tersebut adalah ……… (Ar Na = 23; O = 16; H = 1)", options: ["0,04 gram", "0,08 gram", "0,4 gram", "0,8 gram", "4 gram"], answer: "A" },
+    { id: 41, question: "Sebanyak 8 gram kristal NaOH dilarutkan dalam 1 liter larutan HCN 0,3 M. Bila Ka = 2 x 10–5 and Ar Na = 23, maka besarnya pH campuran adalah .....", options: ["5 – log 2", "5", "6 – log 2", "9 + log 2", "10"], answer: "B" },
+    { id: 42, question: "Sebanyak 50 mL larutan NH4OH 0,01 M (Kb = 10–6) dicampur dengan 100 mL larutan NH4Cl 0,5 M. Maka pH campurannya adalah .......", options: ["5", "6", "7", "8", "9"], answer: "B" },
+    { id: 43, question: "Larutan 100 mL CH3COOH 0,15 M dicampurkan dengan 50 mL larutan KOH 0,2 M. (Ka CH3COOH = 10–5), maka pH campuran adalah ......", options: ["3 – log 6", "6 – log 5", "5 – log 3", "6 – log 3", "3 – log 5"], answer: "B" },
+    { id: 44, question: "Sebanyak 100 mL larutan NH3 0,8 M dicampurkan dengan 50 mL larutan HCl 0,2 M. Bila Kb NH3 = 10–4, maka pH campuran adalah .......", options: ["5 – log 3", "4 + log 3", "10 – log 3", "9 + log 3", "10 + log 7"], answer: "E" },
+    { id: 45, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol KOH padat, maka pH larutan menjadi .......", options: ["4 – log 2", "4", "5", "5 – log 2", "9"], answer: "C" },
+    { id: 46, question: "Campuran buffer yang dapat mempertahankan pH darah dalam tubuh kita adalah .......", options: ["HCN/CN–", "HCl/Cl–", "H2CO3/HCO3–", "CH3COOH/CH3COO–", "HCOOH/HCCO–"], answer: "C" },
+    { id: 47, question: "Larutan buffer dapat dibuat dengan mencampurkan 100 mL larutan CH3COOH 0,1 M dengan larutan .......", options: ["80 mL natrium hidroksida 0,1 M", "100 mL natrium hidroksida 0,1 M", "120 mL natrium hidroksida 0,1 M", "50 mL asam klorida 0,1 M", "100 mL asam klorida 0,1 M"], answer: "A" },
+    { id: 48, question: "Campuran larutan di bawah ini yang merupakan campuran buffer adalah .......", options: ["50 mL HCl 0,5 M + 50 mL NaOH 0,1 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,2 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,1 M", "50 mL HCl 0,1 M + 50 mL NaOH 0,5 M"], answer: "C" },
+    { id: 49, question: "Ke dalam 300 mL larutan CH3COOH 0,1 M dicampurkan 50 mL larutan NaOH 0,2 M. (Ka CH3COOH = 10–5), pH larutan akan berubah dari .......", options: ["3 menjadi 13 – log 2", "1 menjadi 5", "3 menjadi 5 – log 2", "1 menjadi 13 – log 2", "3 menjadi 14"], answer: "C" },
+    { id: 50, question: "Bila larutan NH3 dan HCl dengan konsentrasi yang sama dicampurkan akan didapat larutan yang mempunyai harga pH = 9. Jika Kb = 10–5, maka perbandingan volume kedua larutan tersebut adalah ..", options: ["1 : 1", "1 : 2", "2 : 1", "3 : 2", "3 : 4"], answer: "C" },
+    { id: 51, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol NaOH padat, maka pH campuran menjadi .......", options: ["3 – log 2", "4", "5 – log 2", "5", "6"], answer: "D" },
+    { id: 52, question: "Ke dalam 1 liter larutan asam asetat 0,1 M yang pH-nya = 3 ditambahkan garam natrium asetat supaya pH-nya menjadi dua kali semula (Ka = 10–5). Garam natrium asetat yang ditambahkan sebanyak .......", options: ["0,0001 mol", "0,001 mol", "0,01 mol", "0,1 mol", "1,0 mol"], answer: "E" },
+    { id: 53, question: "Banyaknya amonium sulfat (NH4)2SO4 yang dilarutkan dalam 200 mL larutan NH3 0,1 M, agar pH-nya = 9 + log 2 adalah (Ar N = 14, S = 32 dan O = 16 serta Kb = 10–5)", options: ["330 mg", "660 mg", "132 mg", "464 mg", "960 mg"], answer: "B" },
+    { id: 54, question: "Volume KOH 0,1 M yang harus ditambahkan ke dalam 50 mL larutan asam asetat 0,3 M agar diperoleh larutan penyangga dengan pH sebesar = 5 – log 2 (Ka = 10–5) adalah .......", options: ["15 mL", "25 mL", "30 mL", "50 mL", "75 mL"], answer: "D" },
+    { id: 55, question: "Besarnya pH campuran dari 100 mL larutan NH3 0,4 M yang dicampurkan dengan 50 mL H2SO4 0,2 M (Kb = 10–5) adalah .......", options: ["5", "5 – log 2", "8 + log 2", "9", "9 + log 2"], answer: "D" },
+    { id: 56, question: "Larutan penyangga merupakan campuran dari ......", options: ["basa kuat dengan asam lemah", "basa kuat dengan garamnya", "basa lemah dengan garamnya", "asam kuat dengan garamnya", "asam lemah dengan basa lemah"], answer: "C" },
+    { id: 57, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "pH Awal", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "2,32", "1,70", "13,01"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "4,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
+    { id: 58, question: "Beberapa campuran : (1) 100 mL HCl 0,1 M + 50 mL NaOH 0,1 M, (2) 100 mL CH3COOH 0,1 M + 50 mL CH3COOH 0,1 M, (3) 100 mL H2SO4 0,1 M + 50 mL NaOH 0,1 M, (4) 100 mL CH3COOH 0,1 + 50 mL NaOH 0,1 M, (5) 100 mL NH4OH 0,1 M + 50 mL HCl 0,1 M", subQuestion: "Campuran yang membentuk penyangga yang bersifat asam adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
+    { id: 59, question: "Sebanyak 20 mL larutan NH3 0,30 M (Kb = 10–5) dicampur dengan 40 mL larutan HCl 0,10 M. pH campuran adalah .......", options: ["1", "3", "4,301", "8,669", "9,301"], answer: "D" },
+    { id: 60, question: "Larutan 25 mL NH4OH 0,2 M (Kb = 10–5) dicampur dengan 25 mL larutan HCl 0,1 M. pH larutan yang terjadi adalah .......", options: ["5", "5,5", "8,5", "9", "13"], answer: "D" },
+    { id: 61, question: "Satu liter larutan yang mengandung 0,1 mol NH3 (Kb = 10–5) dan 0,05 mol (NH4)2SO4 mempunyai pH yaitu .......", options: ["5", "5 – log 2", "9", "9 – log 2", "9 + log 2"], answer: "C" },
+    { id: 62, question: "Pasangan larutan berikut ini yang menghasilkan larutan penyangga adalah ......", options: ["50 mL CH3COOH 0,1 M + 50 mL NaOH 0,25 M", "50 mL CH3COOH 0,1 M + 50 mL HCl 0,1 M", "50 mL HCN 0,05 M + 50 mL NaOH 0,05 M", "50 mL NH4OH 0,1 M + 50 mL HCl 0,05 M", "50 mL NaOH 0,1 M + 50 mL HCl 0,1 M"], answer: "D" },
+    { id: 63, question: "Larutan 20 mL HCOOH 0,3 M (K = 2 x 10–5) dicampur dengan 40 mL larutan KOH 0,1 M. Harga pH larutan yang terjadi adalah .......", options: ["1", "3", "5", "8", "10"], answer: "C" },
+    { id: 64, question: "pH campuran dari 200 mL NH4OH 0,1 M dengan 200 mL NH4Cl 0,1 M adalah (Kb = 10–5)", options: ["5", "7", "9", "11", "13"], answer: "C" },
+    { id: 65, question: "Jika kedalam 200 mL larutan NH4OH 0,2 M dicampurkan larutan NH4Cl dengan volume dan konsentrasi yang sama, maka pH larutan adalah .......", options: ["5", "6", "8", "9", "10"], answer: "D" },
+    { id: 66, question: "Diketahui sistem penyangga : (1) NH4OH dan NH4+, (2) H2CO3 dan HCO3–, (3) CH3COOH dan CH3COO–, (4) H2PO4– dan HPO4 2–", subQuestion: "Yang merupakan sistem penyangga dalam tubuh adalah .......", options: ["1 dan 2", "1 dan 3", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "D" },
+    { id: 67, question: "Kegunaan larutan penyangga dalam bidang biologi adalah ......", options: ["untuk pembuatan obat-obatan", "untuk mengatur pH larutan", "untuk mengoptimalkan kerja", "untuk analisis kualitatif", "untuk analisis kuantitatif"], answer: "A" },
+    { id: 68, question: "Di antara larutan berikut ini yang merupakan garam terhidrolisis parsial bersifat basa adalah .......", options: ["NaNO2", "(NH4)2SO4", "K3PO4", "AlCl3", "CaSO4"], answer: "C" },
+    { id: 69, question: "Diantara garam berikut ini yang terhidrolisis total adalah .......", options: ["Cu(CH3COO)2", "Al2(SO4)3", "Fe(NO3)3", "NH4Cl", "NaCl"], answer: "A" },
+    { id: 70, question: "Dari larutan berikut yang memiliki pH di bawah 7 adalah .......", options: ["(NH4)3PO4", "Ca(CH3COO)2", "NaCN", "NH4Cl", "KClO4"], answer: "D" },
+    { id: 71, question: "Ion yang dapat mengalami hidrolisis adalah .......", options: ["NO3–", "Zn2+", "Ca2+", "Cl–", "H+"], answer: "B" },
+    { id: 72, question: "Diketahui reaksi hidrolisisnya : BH+ + H2O → B + H3O+ Garam yang mengalami hidrolisis seperti di atas adalah .......", options: ["AlF3", "NH4Cl", "Ca(NO3)2", "(NH4)2CO3", "KI"], answer: "B" },
+    { id: 73, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Garam", "Uji Lakmus Merah", "Uji Lakmus Biru"], rows: [["1 (NH4)2SO4", "Biru", "Biru"], ["2 Al2(SO4)3", "Merah", "Biru"], ["3 Ca(NO2)2", "Biru", "Biru"], ["4 NH4F", "Merah", "Merah"], ["5 NH4Br", "Merah", "Merah"]] }, subQuestion: "Garam yang mengalami hidrolisis sesuai dengan hasil uji lakmusnya .......", options: ["1 dan 2", "3 dan 5", "2 dan 4", "1 dan 3", "4 dan 5"], answer: "B" },
+    { id: 74, question: "Peristiwa hidrolisis tidak terjadi pada larutan .......", options: ["AlF3", "Na3PO4", "Li2CO3", "BaBr2", "(NH4)2SO4"], answer: "D" },
+    { id: 75, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "12,32", "12,29", "12,30"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "9,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "B" }
+];
 
-        const fullExamData = [
-            { id: 1, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus biru", "Lakmus merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion OH– nya lebih banyak daripada ion H+ adalah ....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "C" },
-            { id: 2, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar ......", options: ["2", "6", "7", "8", "10"], answer: "D" },
-            { id: 3, question: "Data trayek pH dan perubahan warna beberapa indikator sebagai berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah"]] }, subQuestion: "Warna yang terjadi jika diteteskan larutan dengan pH = 7,8 adalah .....", options: ["metil merah (merah) dan metil jingga (kuning)", "metil jingga (kuning) dan bromtimol biru (kuning)", "bromtimol biru (biru) dan fenolftalein (tak berwarna)", "bromtimol biru (kuning) dan fenolftalein (merah)", "metil merah (kuning) dan bromtimol biru (kuning)"], answer: "C" },
-            { id: 4, question: "Diketahui reaksi sebagai berikut : H2O + CH3COO– ⇄ CH3COOH + OH–", subQuestion: "Pasangan basa- asam konjugasi menurut teori asam-basa Bronsted-Lowry adalah ....", options: ["H2O dan CH3COO–", "CH3COOH dan H2O", "CH3COOH dan H2O", "CH3COO– dan CH3COOH", "CH3COOH dan OH–"], answer: "D" },
-            { id: 5, question: "Perhatikan reaksi berikut : H+ + H2O → H3O+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .....", options: ["ion H+ adalah asam", "H2O bersifat asam", "H2O bersifat netral", "ion H+ bersifat basa", "H3O+ netral"], answer: "A" },
-            { id: 6, question: "Jika 100 ml larutan H2SO4 0,2 M dicampur dengan 100 ml larutan H2SO4 0,3 M, konsentrasi H+ dalam campuran adalah ....", options: ["0,2 M", "0,25 M", "0,3 M", "0,4 M", "0,5 M"], answer: "E" },
-            { id: 7, question: "Larutan asam sulfat memiliki massa jenis 1,8 g/ml. Konsentrasi larutan asam sulfat dengan kadar 49% adalah (Ar O = 16, S = 32, H = 1)", options: ["0,9 M", "1,8 M", "9 M", "2,5 M", "18 M"], answer: "C" },
-            { id: 8, question: "Larutan NaOH dalam air mengandung 10% massa NaOH (Mr = 40), maka molaritas 100 ml NaOH tersebut adalah .....", options: ["1/10", "1/100", "1,1", "1,3", "2,5"], answer: "E" },
-            { id: 9, question: "Sebanyak 0,74 gram Ca(OH)2 dilarutkan dalam 500 ml larutan, pH larutan yang terjadi adalah ..... (Ar Ca = 40, O = 16, H = 1)", options: ["2 – log 4", "2 + log 4", "11 + log 4", "12 + log 4", "12 + log 2"], answer: "D" },
-            { id: 10, question: "Larutan asam asetat mempunyai pH = 3 dan Ka = 10–5 (Mr = 60) maka massa asam asetat dalam 500 ml larutan adalah .... gram", options: ["0,3", "0,6", "3", "6", "30"], answer: "C" },
-            { id: 11, question: "Suatu larutan asam metanoat 0,1 M memiliki pH = 2. Derajat disosiasi asam adalah .....", options: ["0,01", "0,001", "0,1", "0,2", "30"], answer: "C" },
-            { id: 12, question: "Volume air yang harus ditambahkan ke dalam 10 ml larutan HCl yang memiliki pH = 1 agar pH menjadi 2 adalah .....", options: ["10 ml", "20 ml", "90 ml", "100 ml", "990 ml"], answer: "C" },
-            { id: 13, question: "Jika 300 ml larutan HCl 0,1 M dicampur dengan 200 ml H2SO4 0,05 M maka akan diperoleh campuran dengan pH .....", options: ["1", "1 – log 2", "2", "2 – log 5", "3"], answer: "A" },
-            { id: 14, question: "Jika dicampurkan 800 ml HCl 0,01 M dengan 200 ml NaOH 0,02 M, maka pH campurannya .....", options: ["12", "4", "3 + log 4", "3 – log 4", "3"], answer: "D" },
-            { id: 15, question: "Untuk mendapatkan larutan dengan pH = 12 maka ke dalam 700 ml larutan KOH 0,1 M harus ditambahkan larutan H2SO4 0,1 M sebanyak .......", options: ["100 ml", "300 ml", "500 ml", "700 ml", "1000 ml"], answer: "B" },
-            { id: 16, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Larutan", "Lakmus Biru", "Lakmus Merah"], rows: [["1", "merah", "biru"], ["2", "biru", "biru"], ["3", "biru", "biru"], ["4", "merah", "merah"], ["5", "merah", "merah"]] }, subQuestion: "Larutan yang mengandung ion H+ lebih banyak daripada ion OH– adalah .....", options: ["1 dan 2", "1 dan 5", "2 dan 3", "2 dan 4", "4 dan 5"], answer: "E" },
-            { id: 17, question: "Perhatikan data berikut :", hasTable: true, tableData: { headers: ["Indikator", "Trayek / warna", "Hasil uji larutan"], rows: [["Metil merah", "4,2 – 6,3 / merah – kuning", "Kuning"], ["Metil jingga", "2,9 – 4,0 / merah – kuning", "Kuning"], ["Bromtimol biru", "6,0 – 7,6 / kuning – biru", "Biru"], ["Fenolftalein", "8,3 – 10 / tak berwarna – merah", "Tak berwarna"]] }, subQuestion: "Berdasarkan hasil uji, pH larutan sekitar .....", options: ["2", "4", "7", "8", "di atas 10"], answer: "D" },
-            { id: 18, question: "Basa konjugasi dari NH3 adalah .....", options: ["NH4OH", "NH2+", "NH2–", "H2O", "NH4+"], answer: "C" },
-            { id: 19, question: "Diantara spesi berikut yang tidak mungkin sebagai asam Bronsted-Lowry adalah .....", options: ["H2O", "NH4+", "HClO4", "CN–", "H2PO4–"], answer: "D" },
-            { id: 20, question: "NaH larut dalam air menurut persamaan reaksi : H– + H2O → OH– + H2", subQuestion: "Pasangan asam-basa konjugas menurut teori asam basa Bronsted-Lowry adalah .......", options: ["H– dan H2O", "H2O dan OH–", "H2 dan H2O", "H+ dan OH–", "H2 dan OH–"], answer: "B" },
-            { id: 21, question: "Perhatikan reaksi berikut : H+ + NH3 → NH4+", subQuestion: "Pernyataan berikut yang sesuai dengan teori Lewis adalah .......", options: ["ion H+ adalah basa", "NH3 bersifat basa", "NH4+ bersifat asam", "ion H+ bersifat netral", "NH3 netral"], answer: "B" },
-            { id: 22, question: "Perhatikan tabel berikut :", hasTable: true, tableData: { headers: ["Asam", "Ka"], rows: [["HA", "6,2 x 10–8"], ["HB", "7,5 x 10–2"], ["HC", "1,2 x 10–2"], ["HD", "1,8 x 10–12"], ["HE", "6,7 x 10–5"]] }, subQuestion: "Berdasarkan tabel di atas urutan kekuatan asam dari yang lemah adalah .......", options: ["HA – HB – HC – HD – HE", "HD – HA – HE – HC – HB", "HC – HB – HD – HE – HA", "HB – HC – HE – HA – HD", "HD – HA – HE – HB – HC"], answer: "B" },
-            { id: 23, question: "Derajat keasaman dari 100 ml H2SO4 10–8 M adalah .......", options: ["6 + log 2", "7 – log 1,2", "7 + log 1,2", "8 – log 2", "8"], answer: "B" },
-            { id: 24, question: "Pada suhu dan tekanan tertentu, harga tetapan kesetimbangan air, Kw = 5.10–13. Pada suhu dan tekanan yang sama jumlah (H+) dan pH larutan Ca(OH)2 0,0005 M adalah ......", options: ["5 x 10–10 M dan pH = 10 – log 5", "10–9 dan pH = 9", "10–3 dan pH = 3", "10–10 dan pH = 10", "5 x 10–10 pH = 10 + log 5"], answer: "A" },
-            { id: 25, question: "Sebanyak 10 mL larutan asam asetat dengan pH = 3 dicampur air 90 ml. Berapakah pH larutan sekarang ? (Ka = 10–5)", options: ["2", "2,5", "3", "3,5", "4"], answer: "D" },
-            { id: 26, question: "pH suatu larutan basa lemah valensi satu = 10, maka konsentrasi ion OH– dalam larutan adalah", options: ["10–10 M", "10–8 M", "10–6 M", "10–5 M", "10–4 M"], answer: "E" },
-            { id: 27, question: "Manakah oksida-oksida berikut yang jika dilarutkan dalam air akan menghasilkan asam ?", options: ["MgO", "SO3", "FeO", "ZnO", "K2O"], answer: "B" },
-            { id: 28, question: "Pada reaksi : NH3(aq) + H2O(l) → NH4+(aq) + OH–(aq)", subQuestion: "Pasangan basa asam konjugasinya adalah ......", options: ["NH3/H2O", "NH4+/OH-", "NH3/OH–", "NH4+/H2O", "NH3/NH4+"], answer: "E" },
-            { id: 29, question: "Ion HCO3– bersifat amfiprotik yakni bisa bersifat asam maupun basa. Reaksi manakah yang menunjukkan HCO3– bersifat basa ?", options: ["HCO3– + H2O → H2CO3 + OH–", "HCO3– + OH– → CO3 2– + H2O", "HCO3– + NH3 → CO3 2– + NH4+", "HCO3– → H+ + CO3 2–", "HCO3– + H2O → CO3 2– + H3O+"], answer: "A" },
-            { id: 30, question: "Air pada suhu 25°C memiliki [H+] = [OH–]. Jika pada suhu tetap ke dalam air ditambahkan asam, maka pernyataan yang benar adalah .......", options: ["[H+] < [OH–]", "[H+] = [OH–]", "[H+] > [OH–]", "pH bertambah besar", "[OH–] bertambah"], answer: "C" },
-            { id: 31, question: "Perhatikan data hasil percobaan titrasi larutan NaOH dengan larutan H2SO4 0,2 M berikut ini :", hasTable: true, tableData: { headers: ["Percobaan", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "15", "7,60"], ["2", "15", "7,50"], ["3", "15", "7,40"]] }, subQuestion: "Dari data tersebut maka konsentrasi larutan NaOH adalah ………", options: ["0,1 M", "0,2 M", "0,3 M", "0,4 M", "0,5 M"], answer: "B" },
-            { id: 32, question: "Sebanyak 2 gram cuplikan NaOH dilarutkan dalam 250 mL air. Kemudian 20 mL dan larutan ini dititrasi dengan larutan HCl 0,1 M dan diperoleh data tertentu.", subQuestion: "Kadar NaOH dalam cuplikan tersebut adalah ……… (Mr NaOH = 40)", options: ["20%", "25%", "40%", "62,5%", "75%"], answer: "D" },
-            { id: 33, question: "Pada percobaan titrasi larutan CH3COOH dengan larutan NaOH menurut reaksi : CH3COOH(aq) + NaOH(aq) → NaCH3COO(aq) + H2O(l)", subQuestion: "Grafik yang menunjukkan hasil titrasi tersebut adalah ……… (Asumsi grafik pH awal asam lemah < 7, titik ekivalen > 7)", options: ["Grafik A (pH naik dari <7 ke >7)", "Grafik B", "Grafik C", "Grafik D", "Grafik E"], answer: "D" },
-            { id: 34, question: "Pada percobaan titrasi larutan HCl dengan larutan NaOH berlangsung reaksi : HCl + NaOH → NaCl + H2O", subQuestion: "Kurva yang menunjukkkan hasil titrasi tersebut adalah ……… (Asumsi Kurva pH awal asam kuat 1, titik ekivalen 7)", options: ["Kurva A", "Kurva B", "Kurva C", "Kurva D", "Kurva E"], answer: "A" },
-            { id: 35, question: "Berikut data hasil titrasi larutan HCl dengan larutan Ba(OH)2 0,2 M :", hasTable: true, tableData: { headers: ["Percobaan", "Volume larutan HCl", "Volume larutan Ba(OH)2"], rows: [["1", "15 mL", "30 mL"], ["2", "15 mL", "29 mL"], ["3", "15 mL", "31 mL"]] }, subQuestion: "Berdasarkan data tersebut, konsentrasi larutan HCl adalah ……… M.", options: ["0,2", "0,4", "0,6", "0,8", "1,0"], answer: "D" },
-            { id: 36, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi asam HX dengan basa kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 20 mL, konsentrasi larutan asam HX itu adalah .......", options: ["0,075 M", "0,125 M", "0,08 M", "0,25 M", "0,10 M"], answer: "B" },
-            { id: 37, question: "Perhatikan grafik titrasi asam basa berikut! (Grafik menunjukkan titrasi basa LOH dengan asam kuat)", subQuestion: "Jika volume larutan yang dititrasi sebanyak 10 mL maka konsentrasi larutan basa LOH itu adalah ......", options: ["0,25 M", "0,125 M", "0,1 M", "0,075 M", "0,025 M"], answer: "A" },
-            { id: 38, question: "Data titrasi 10 mL larutan NaOH 0,1 M dengan larutan H2SO4 sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume NaOH (mL)", "Volume H2SO4 (mL)"], rows: [["1", "10", "4"], ["2", "10", "5"], ["3", "10", "6"]] }, subQuestion: "Massa H2SO4 yang bereaksi pada titrasi tersebut adalah ……… (Mr H2SO4 = 98)", options: ["0,049 gram", "9,800 gram", "19,600 gram", "29,400 gram", "98,000 gram"], answer: "A" },
-            { id: 39, question: "Data titrasi 25 mL larutan H2SO4 0,1 M dengan larutan KOH sebagai berikut :", hasTable: true, tableData: { headers: ["No.", "Volume H2SO4 (mL)", "Volume KOH (mL)"], rows: [["1", "25", "21"], ["2", "25", "19"], ["3", "25", "20"]] }, subQuestion: "Massa KOH yang bereaksi adalah …… (Mr KOH = 56)", options: ["0,14 gram", "0,28 gram", "1,4 gram", "2,80 gram", "14,0 gram"], answer: "B" },
-            { id: 40, question: "Titrasi 10 mL larutan HNO3 0,1 M oleh larutan NaOH. Titik akhir titrasi dicapai setelah penambahan 20 mL larutan NaOH.", subQuestion: "Massa NaOH terlarut dalam 20 mL larutan NaOH tersebut adalah ……… (Ar Na = 23; O = 16; H = 1)", options: ["0,04 gram", "0,08 gram", "0,4 gram", "0,8 gram", "4 gram"], answer: "A" },
-            { id: 41, question: "Sebanyak 8 gram kristal NaOH dilarutkan dalam 1 liter larutan HCN 0,3 M. Bila Ka = 2 x 10–5 dan Ar Na = 23, maka besarnya pH campuran adalah .....", options: ["5 – log 2", "5", "6 – log 2", "9 + log 2", "10"], answer: "B" },
-            { id: 42, question: "Sebanyak 50 mL larutan NH4OH 0,01 M (Kb = 10–6) dicampur dengan 100 mL larutan NH4Cl 0,5 M. Maka pH campurannya adalah .......", options: ["5", "6", "7", "8", "9"], answer: "B" },
-            { id: 43, question: "Larutan 100 mL CH3COOH 0,15 M dicampurkan dengan 50 mL larutan KOH 0,2 M. (Ka CH3COOH = 10–5), maka pH campuran adalah ......", options: ["3 – log 6", "6 – log 5", "5 – log 3", "6 – log 3", "3 – log 5"], answer: "B" },
-            { id: 44, question: "Sebanyak 100 mL larutan NH3 0,8 M dicampurkan dengan 50 mL larutan HCl 0,2 M. Bila Kb NH3 = 10–4, maka pH campuran adalah .......", options: ["5 – log 3", "4 + log 3", "10 – log 3", "9 + log 3", "10 + log 7"], answer: "E" },
-            { id: 45, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol KOH padat, maka pH larutan menjadi .......", options: ["4 – log 2", "4", "5", "5 – log 2", "9"], answer: "C" },
-            { id: 46, question: "Campuran buffer yang dapat mempertahankan pH darah dalam tubuh kita adalah .......", options: ["HCN/CN–", "HCl/Cl–", "H2CO3/HCO3–", "CH3COOH/CH3COO–", "HCOOH/HCCO–"], answer: "C" },
-            { id: 47, question: "Larutan buffer dapat dibuat dengan mencampurkan 100 mL larutan CH3COOH 0,1 M dengan larutan .......", options: ["80 mL natrium hidroksida 0,1 M", "100 mL natrium hidroksida 0,1 M", "120 mL natrium hidroksida 0,1 M", "50 mL asam klorida 0,1 M", "100 mL asam klorida 0,1 M"], answer: "A" },
-            { id: 48, question: "Campuran larutan di bawah ini yang merupakan campuran buffer adalah .......", options: ["50 mL HCl 0,5 M + 50 mL NaOH 0,1 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,2 M + 50 mL NH4OH 0,5 M", "50 mL HCl 0,5 M + 50 mL NH4OH 0,1 M", "50 mL HCl 0,1 M + 50 mL NaOH 0,5 M"], answer: "C" },
-            { id: 49, question: "Ke dalam 300 mL larutan CH3COOH 0,1 M dicampurkan 50 mL larutan NaOH 0,2 M. (Ka CH3COOH = 10–5), pH larutan akan berubah dari .......", options: ["3 menjadi 13 – log 2", "1 menjadi 5", "3 menjadi 5 – log 2", "1 menjadi 13 – log 2", "3 menjadi 14"], answer: "C" },
-            { id: 50, question: "Bila larutan NH3 dan HCl dengan konsentrasi yang sama dicampurkan akan didapat larutan yang mempunyai harga pH = 9. Jika Kb = 10–5, maka perbandingan volume kedua larutan tersebut adalah ..", options: ["1 : 1", "1 : 2", "2 : 1", "3 : 2", "3 : 4"], answer: "C" },
-            { id: 51, question: "Pada 1 liter larutan asam lemah HA 0,3 M (Ka = 2 x 10–5) ditambah 0,2 mol NaOH padat, maka pH campuran menjadi .......", options: ["3 – log 2", "4", "5 – log 2", "5", "6"], answer: "D" },
-            { id: 52, question: "Ke dalam 1 liter larutan asam asetat 0,1 M yang pH-nya = 3 ditambahkan garam natrium asetat supaya pH-nya menjadi dua kali semula (Ka = 10–5). Garam natrium asetat yang ditambahkan sebanyak .......", options: ["0,0001 mol", "0,001 mol", "0,01 mol", "0,1 mol", "1,0 mol"], answer: "E" },
-            { id: 53, question: "Banyaknya amonium sulfat (NH4)2SO4 yang dilarutkan dalam 200 mL larutan NH3 0,1 M, agar pH-nya = 9 + log 2 adalah (Ar N = 14, S = 32 dan O = 16 serta Kb = 10–5)", options: ["330 mg", "660 mg", "132 mg", "464 mg", "960 mg"], answer: "B" },
-            { id: 54, question: "Volume KOH 0,1 M yang harus ditambahkan ke dalam 50 mL larutan asam asetat 0,3 M agar diperoleh larutan penyangga dengan pH sebesar = 5 – log 2 (Ka = 10–5) adalah .......", options: ["15 mL", "25 mL", "30 mL", "50 mL", "75 mL"], answer: "D" },
-            { id: 55, question: "Besarnya pH campuran dari 100 mL larutan NH3 0,4 M yang dicampurkan dengan 50 mL H2SO4 0,2 M (Kb = 10–5) adalah .......", options: ["5", "5 – log 2", "8 + log 2", "9", "9 + log 2"], answer: "D" },
-            { id: 56, question: "Larutan penyangga merupakan campuran dari ......", options: ["basa kuat dengan asam lemah", "basa kuat dengan garamnya", "basa lemah dengan garamnya", "asam kuat dengan garamnya", "asam lemah dengan basa lemah"], answer: "C" },
-            { id: 57, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "pH Awal", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "2,32", "1,70", "13,01"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "4,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
-            { id: 58, question: "Beberapa campuran : (1) 100 mL HCl 0,1 M + 50 mL NaOH 0,1 M, (2) 100 mL CH3COOH 0,1 M + 50 mL CH3COOH 0,1 M, (3) 100 mL H2SO4 0,1 M + 50 mL NaOH 0,1 M, (4) 100 mL CH3COOH 0,1 + 50 mL NaOH 0,1 M, (5) 100 mL NH4OH 0,1 M + 50 mL HCl 0,1 M", subQuestion: "Campuran yang membentuk penyangga yang bersifat asam adalah .......", options: ["1", "2", "3", "4", "5"], answer: "D" },
-            { id: 59, question: "Sebanyak 20 mL larutan NH3 0,30 M (Kb = 10–5) dicampur dengan 40 mL larutan HCl 0,10 M. pH campuran adalah .......", options: ["1", "3", "4,301", "8,669", "9,301"], answer: "D" },
-            { id: 60, question: "Larutan 25 mL NH4OH 0,2 M (Kb = 10–5) dicampur dengan 25 mL larutan HCl 0,1 M. pH larutan yang terjadi adalah .......", options: ["5", "5,5", "8,5", "9", "13"], answer: "D" },
-            { id: 61, question: "Satu liter larutan yang mengandung 0,1 mol NH3 (Kb = 10–5) dan 0,05 mol (NH4)2SO4 mempunyai pH yaitu .......", options: ["5", "5 – log 2", "9", "9 – log 2", "9 + log 2"], answer: "C" },
-            { id: 62, question: "Pasangan larutan berikut ini yang menghasilkan larutan penyangga adalah ......", options: ["50 mL CH3COOH 0,1 M + 50 mL NaOH 0,25 M", "50 mL CH3COOH 0,1 M + 50 mL HCl 0,1 M", "50 mL HCN 0,05 M + 50 mL NaOH 0,05 M", "50 mL NH4OH 0,1 M + 50 mL HCl 0,05 M", "50 mL NaOH 0,1 M + 50 mL HCl 0,1 M"], answer: "D" },
-            { id: 63, question: "Larutan 20 mL HCOOH 0,3 M (K = 2 x 10–5) dicampur dengan 40 mL larutan KOH 0,1 M. Harga pH larutan yang terjadi adalah .......", options: ["1", "3", "5", "8", "10"], answer: "C" },
-            { id: 64, question: "pH campuran dari 200 mL NH4OH 0,1 M dengan 200 mL NH4Cl 0,1 M adalah (Kb = 10–5)", options: ["5", "7", "9", "11", "13"], answer: "C" },
-            { id: 65, question: "Jika kedalam 200 mL larutan NH4OH 0,2 M dicampurkan larutan NH4Cl dengan volume dan konsentrasi yang sama, maka pH larutan adalah .......", options: ["5", "6", "8", "9", "10"], answer: "D" },
-            { id: 66, question: "Diketahui sistem penyangga : (1) NH4OH dan NH4+, (2) H2CO3 dan HCO3–, (3) CH3COOH dan CH3COO–, (4) H2PO4– dan HPO4 2–", subQuestion: "Yang merupakan sistem penyangga dalam tubuh adalah .......", options: ["1 dan 2", "1 dan 3", "2 dan 3", "2 dan 4", "3 dan 4"], answer: "D" },
-            { id: 67, question: "Kegunaan larutan penyangga dalam bidang biologi adalah ......", options: ["untuk pembuatan obat-obatan", "untuk mengatur pH larutan", "untuk mengoptimalkan kerja", "untuk analisis kualitatif", "untuk analisis kuantitatif"], answer: "A" },
-            { id: 68, question: "Di antara larutan berikut ini yang merupakan garam terhidrolisis parsial bersifat basa adalah .......", options: ["NaNO2", "(NH4)2SO4", "K3PO4", "AlCl3", "CaSO4"], answer: "C" },
-            { id: 69, question: "Diantara garam berikut ini yang terhidrolisis total adalah .......", options: ["Cu(CH3COO)2", "Al2(SO4)3", "Fe(NO3)3", "NH4Cl", "NaCl"], answer: "A" },
-            { id: 70, question: "Dari larutan berikut yang memiliki pH di bawah 7 adalah .......", options: ["(NH4)3PO4", "Ca(CH3COO)2", "NaCN", "NH4Cl", "KClO4"], answer: "D" },
-            { id: 71, question: "Ion yang dapat mengalami hidrolisis adalah .......", options: ["NO3–", "Zn2+", "Ca2+", "Cl–", "H+"], answer: "B" },
-            { id: 72, question: "Diketahui reaksi hidrolisisnya : BH+ + H2O → B + H3O+ Garam yang mengalami hidrolisis seperti di atas adalah .......", options: ["AlF3", "NH4Cl", "Ca(NO3)2", "(NH4)2CO3", "KI"], answer: "B" },
-            { id: 73, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Garam", "Uji Lakmus Merah", "Uji Lakmus Biru"], rows: [["1 (NH4)2SO4", "Biru", "Biru"], ["2 Al2(SO4)3", "Merah", "Biru"], ["3 Ca(NO2)2", "Biru", "Biru"], ["4 NH4F", "Merah", "Merah"], ["5 NH4Br", "Merah", "Merah"]] }, subQuestion: "Garam yang mengalami hidrolisis sesuai dengan hasil uji lakmusnya .......", options: ["1 dan 2", "3 dan 5", "2 dan 4", "1 dan 3", "4 dan 5"], answer: "B" },
-            { id: 74, question: "Peristiwa hidrolisis tidak terjadi pada larutan .......", options: ["AlF3", "Na3PO4", "Li2CO3", "BaBr2", "(NH4)2SO4"], answer: "D" },
-            { id: 75, question: "Perhatikan tabel di bawah ini !", hasTable: true, tableData: { headers: ["Larutan", "Air", "Asam Kuat", "Basa Kuat"], rows: [["1", "2,48", "2,32", "13,45"], ["2", "12,32", "12,29", "12,30"], ["3", "4,73", "4,66", "12,52"], ["4", "4,75", "4,76", "9,76"], ["5", "4,75", "1,45", "12,55"]] }, subQuestion: "Larutan yang mempunyai sifat penyangga adalah .......", options: ["1", "2", "3", "4", "5"], answer: "B" }
-        ];
+const App = () => {
+    // State management
+    const [examData, setExamData] = useState([]);
+    const [idx, setIdx] = useState(0);
+    const [ans, setAns] = useState({});
+    const [doubts, setDoubts] = useState({});
+    const [time, setTime] = useState(7200);
+    const [showSidebar, setShowSidebar] = useState(false);
+    const [finished, setFinished] = useState(false);
+    const [score, setScore] = useState(0);
 
-        const App = () => {
-            const [idx, setIdx] = useState(0);
-            const [ans, setAns] = useState({});
-            const [doubts, setDoubts] = useState({});
-            const [time, setTime] = useState(7200);
-            const [showSidebar, setShowSidebar] = useState(true);
-            const [finished, setFinished] = useState(false);
-            const [score, setScore] = useState(0);
+    // Function untuk mengacak soal saat inisialisasi
+    useEffect(() => {
+        const shuffled = [...originalExamData].sort(() => Math.random() - 0.5);
+        setExamData(shuffled);
+    }, []);
 
-            useEffect(() => {
-                const t = setInterval(() => setTime(prev => prev > 0 ? prev - 1 : 0), 1000);
-                return () => clearInterval(t);
-            }, []);
+    // Timer logic
+    useEffect(() => {
+        const t = setInterval(() => setTime(prev => prev > 0 ? prev - 1 : 0), 1000);
+        return () => clearInterval(t);
+    }, []);
 
-            const formatTime = (s) => {
-                const h = Math.floor(s / 3600);
-                const m = Math.floor((s % 3600) / 60);
-                const sc = s % 60;
-                return `${h}:${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`;
-            };
+    const formatTime = (s) => {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sc = s % 60;
+        return `${h}:${m.toString().padStart(2, '0')}:${sc.toString().padStart(2, '0')}`;
+    };
 
-            const finishExam = () => {
-                let correct = 0;
-                fullExamData.forEach((q, i) => {
-                    if (ans[i] === q.answer) correct++;
-                });
-                setScore((correct / 75) * 100);
-                setFinished(true);
-            };
+    const finishExam = () => {
+        let correct = 0;
+        examData.forEach((q, i) => {
+            if (ans[i] === q.answer) correct++;
+        });
+        setScore((correct / examData.length) * 100);
+        setFinished(true);
+    };
 
-            const q = fullExamData[idx];
+    if (examData.length === 0) return null;
 
-            if (finished) {
-                return (
-                    <div className="min-h-screen flex items-center justify-center p-6">
-                        <div className="bg-white p-10 rounded-2xl shadow-xl max-w-md w-full text-center">
-                            <h2 className="text-3xl font-extrabold text-slate-800 mb-4">Hasil Latihan</h2>
-                            <div className="text-6xl font-black text-blue-600 mb-6">{score.toFixed(1)}</div>
-                            <p className="text-slate-500 mb-8">Selamat! Anda telah menyelesaikan 75 soal latihan Kimia XI.</p>
-                            <button onClick={() => window.location.reload()} className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold">ULANGI LATIHAN</button>
-                        </div>
-                    </div>
-                );
-            }
+    const q = examData[idx];
 
-            return (
-                <div className="flex flex-col h-screen overflow-hidden">
-                    <header className="h-14 bg-white border-b shadow-sm flex items-center justify-between px-6 z-30">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold">K</div>
-                            <span className="font-bold text-slate-700 uppercase tracking-tight">Steven Arthur</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="bg-blue-50 text-blue-600 px-4 py-1 rounded-full font-mono font-bold border border-blue-100">
-                                {formatTime(time)}
-                            </div>
-                            <button className="lg:hidden p-2 bg-slate-100 rounded text-slate-600" onClick={() => setShowSidebar(!showSidebar)}>☰</button>
-                        </div>
-                    </header>
-
-                    <div className="flex flex-1 overflow-hidden">
-                        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-slate-50">
-                            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border p-6 md:p-10 relative">
-                                <div className="flex justify-between items-center mb-6 border-b pb-4">
-                                    <div>
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Question</span>
-                                        <h2 className="text-2xl font-black text-slate-800">{idx + 1} <span className="text-slate-300">/ 75</span></h2>
-                                    </div>
-                                    <button 
-                                        onClick={() => setDoubts({...doubts, [idx]: !doubts[idx]})}
-                                        className={`px-5 py-2 rounded-xl text-xs font-bold transition-all border-2 ${doubts[idx] ? 'bg-amber-500 border-amber-500 text-white shadow-lg' : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600'}`}
-                                    >
-                                        RAGU-RAGU
-                                    </button>
-                                </div>
-
-                                <div className="space-y-6">
-                                    <p className="text-lg leading-relaxed font-semibold text-slate-700 whitespace-pre-line">{q.question}</p>
-                                    
-                                    {q.hasTable && (
-                                        <div className="overflow-x-auto border rounded-xl shadow-sm">
-                                            <table className="w-full text-sm text-left">
-                                                <thead className="bg-slate-50 border-b">
-                                                    <tr>{q.tableData.headers.map((h, i) => <th key={i} className="px-4 py-3 font-bold text-slate-600">{h}</th>)}</tr>
-                                                </thead>
-                                                <tbody className="divide-y">
-                                                    {q.tableData.rows.map((row, i) => (
-                                                        <tr key={i} className="hover:bg-slate-50">{row.map((c, j) => <td key={j} className="px-4 py-3 text-slate-600">{c}</td>)}</tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-
-                                    {q.subQuestion && (
-                                        <div className="p-5 bg-blue-50 border-l-4 border-blue-500 rounded-r-xl font-bold text-blue-900 leading-relaxed italic">
-                                            {q.subQuestion}
-                                        </div>
-                                    )}
-
-                                    <div className="grid gap-3 pt-4">
-                                        {q.options.map((opt, i) => {
-                                            const char = String.fromCharCode(65 + i);
-                                            const active = ans[idx] === char;
-                                            return (
-                                                <button 
-                                                    key={i} 
-                                                    onClick={() => setAns({...ans, [idx]: char})}
-                                                    className={`group w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 ${active ? 'border-blue-600 bg-blue-50 ring-4 ring-blue-50' : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50'}`}
-                                                >
-                                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-colors ${active ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'}`}>
-                                                        {char}
-                                                    </div>
-                                                    <span className={`text-left font-bold transition-colors ${active ? 'text-blue-900' : 'text-slate-600 group-hover:text-slate-800'}`}>{opt}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                <div className="mt-12 flex justify-between gap-4">
-                                    <button 
-                                        disabled={idx === 0} 
-                                        onClick={() => setIdx(idx - 1)}
-                                        className="flex-1 px-6 py-4 bg-slate-100 rounded-2xl font-bold text-slate-500 disabled:opacity-30 hover:bg-slate-200 transition-all active:scale-95"
-                                    >
-                                        SEBELUMNYA
-                                    </button>
-                                    {idx === 74 ? (
-                                        <button 
-                                            onClick={finishExam}
-                                            className="flex-1 px-6 py-4 bg-emerald-600 rounded-2xl font-bold text-white hover:bg-emerald-700 transition-all shadow-lg active:scale-95"
-                                        >
-                                            SELESAI & KIRIM
-                                        </button>
-                                    ) : (
-                                        <button 
-                                            onClick={() => setIdx(idx + 1)}
-                                            className="flex-1 px-6 py-4 bg-blue-600 rounded-2xl font-bold text-white hover:bg-blue-700 transition-all shadow-lg active:scale-95"
-                                        >
-                                            SELANJUTNYA
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </main>
-
-                        <aside className={`${showSidebar ? 'w-full lg:w-80' : 'w-0'} bg-white border-l transition-all duration-300 absolute lg:relative right-0 h-full z-20 overflow-hidden flex flex-col shadow-2xl lg:shadow-none`}>
-                            <div className="p-5 bg-slate-50 border-b flex justify-between items-center">
-                                <h3 className="font-extrabold text-slate-700 tracking-tight">NAVIGASI SOAL</h3>
-                                <button className="lg:hidden text-3xl text-slate-400" onClick={() => setShowSidebar(false)}>×</button>
-                            </div>
-                            
-                            <div className="p-4 grid grid-cols-5 gap-2 overflow-y-auto custom-scrollbar flex-1 content-start">
-                                {fullExamData.map((_, i) => {
-                                    const sudahJawab = ans[i];
-                                    const ragu = doubts[i];
-                                    const isAktif = idx === i;
-                                    
-                                    let btnClass = "h-12 rounded-xl text-sm font-black flex items-center justify-center transition-all border-2 relative ";
-                                    
-                                    if (sudahJawab) {
-                                        btnClass += "bg-blue-600 border-blue-600 text-white shadow-sm ";
-                                    } else {
-                                        btnClass += "bg-white border-slate-100 text-slate-300 hover:border-slate-300 ";
-                                    }
-
-                                    if (ragu) btnClass += "doubt-ring ";
-                                    if (isAktif) btnClass += "ring-2 ring-blue-400 ring-offset-2 scale-105 z-10 ";
-
-                                    return (
-                                        <button key={i} onClick={() => {setIdx(i); if(window.innerWidth < 1024) setShowSidebar(false);}} className={btnClass}>
-                                            {i + 1}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            <div className="p-5 bg-slate-50 border-t space-y-3">
-                                <div className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                    <div className="w-5 h-5 bg-white border-2 border-slate-200 rounded-lg"></div>
-                                    <span>Belum Diisi</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                    <div className="w-5 h-5 bg-blue-600 rounded-lg shadow-sm"></div>
-                                    <span>Sudah Diisi</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                    <div className="w-5 h-5 bg-white border-4 border-amber-500 rounded-lg"></div>
-                                    <span>Ragu-Ragu</span>
-                                </div>
-                                <button onClick={finishExam} className="w-full mt-4 py-3 bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-900 transition-colors">Submit Ujian</button>
-                            </div>
-                        </aside>
-                    </div>
+    if (finished) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-6 bg-slate-100">
+                <div className="bg-white p-10 rounded-2xl shadow-xl max-w-md w-full text-center border">
+                    <h2 className="text-3xl font-extrabold text-slate-800 mb-4">Hasil Latihan</h2>
+                    <div className="text-6xl font-black text-blue-600 mb-2">{score.toFixed(1)}</div>
+                    <p className="text-slate-500 mb-8">Selamat! Anda telah menyelesaikan {examData.length} soal latihan Kimia XI.</p>
+                    <button onClick={() => window.location.reload()} className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md">ULANGI LATIHAN</button>
                 </div>
-            );
-        };
+            </div>
+        );
+    }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+    return (
+        <div className="flex flex-col h-screen overflow-hidden bg-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
+            {/* Header: Sesuai permintaan, kotak biru XI-E dihapus */}
+            <header className="h-16 bg-white border-b shadow-sm flex items-center justify-between px-6 z-30 shrink-0">
+                <div className="flex items-center">
+                    <span className="font-bold text-slate-800 uppercase tracking-tight text-sm sm:text-lg">Steven Arthur XI-E</span>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full font-mono font-bold border border-blue-100 text-sm md:text-base">
+                        {formatTime(time)}
+                    </div>
+                    <button className="lg:hidden p-2 bg-slate-100 rounded-lg text-slate-600 border" onClick={() => setShowSidebar(true)}>
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </header>
+
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* Main Soal Area */}
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+                    <div className="max-w-3xl mx-auto flex flex-col min-h-full">
+                        <div className="bg-white rounded-2xl shadow-sm border p-6 md:p-10 flex-1 flex flex-col">
+                            {/* Question Header */}
+                            <div className="flex justify-between items-center mb-8 border-b pb-5 shrink-0">
+                                <div>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Pertanyaan</span>
+                                    <h2 className="text-3xl font-black text-slate-800">{idx + 1} <span className="text-slate-300">/ {examData.length}</span></h2>
+                                </div>
+                                <button 
+                                    onClick={() => setDoubts({...doubts, [idx]: !doubts[idx]})}
+                                    className={`px-5 py-2.5 rounded-xl text-[11px] font-bold transition-all border-2 ${doubts[idx] ? 'bg-amber-500 border-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600'}`}
+                                >
+                                    RAGU-RAGU
+                                </button>
+                            </div>
+
+                            {/* Content Area */}
+                            <div className="flex-1 space-y-6">
+                                <p className="text-lg leading-relaxed font-semibold text-slate-700 whitespace-pre-line">{q.question}</p>
+                                
+                                {q.hasTable && (
+                                    <div className="overflow-x-auto border rounded-xl shadow-sm bg-slate-50/50">
+                                        <table className="w-full text-sm text-left border-collapse">
+                                            <thead className="bg-slate-100 border-b">
+                                                <tr>{q.tableData.headers.map((h, i) => <th key={i} className="px-4 py-3 font-bold text-slate-600 border-r last:border-0">{h}</th>)}</tr>
+                                            </thead>
+                                            <tbody className="divide-y bg-white">
+                                                {q.tableData.rows.map((row, i) => (
+                                                    <tr key={i} className="hover:bg-slate-50 transition-colors">{row.map((c, j) => <td key={j} className="px-4 py-3 text-slate-600 border-r last:border-0">{c}</td>)}</tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+
+                                {q.subQuestion && (
+                                    <div className="p-5 bg-blue-50/50 border-l-4 border-blue-500 rounded-r-xl font-bold text-blue-900 leading-relaxed italic shadow-sm">
+                                        {q.subQuestion}
+                                    </div>
+                                )}
+
+                                <div className="grid gap-3.5 pt-4">
+                                    {q.options.map((opt, i) => {
+                                        const char = String.fromCharCode(65 + i);
+                                        const active = ans[idx] === char;
+                                        return (
+                                            <button 
+                                                key={i} 
+                                                onClick={() => setAns({...ans, [idx]: char})}
+                                                className={`group w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 text-left ${active ? 'border-blue-600 bg-blue-50 ring-4 ring-blue-600/5' : 'border-slate-100 bg-white hover:border-slate-300 hover:shadow-md'}`}
+                                            >
+                                                <div className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center font-bold text-lg transition-all ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 rotate-3' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200 group-hover:text-slate-500'}`}>
+                                                    {char}
+                                                </div>
+                                                <span className={`text-base font-bold transition-colors ${active ? 'text-blue-900' : 'text-slate-600 group-hover:text-slate-800'}`}>{opt}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Navigation Controls */}
+                            <div className="mt-10 flex flex-wrap sm:flex-nowrap justify-between gap-4 pt-8 border-t shrink-0">
+                                <button 
+                                    disabled={idx === 0} 
+                                    onClick={() => setIdx(idx - 1)}
+                                    className="flex-1 min-w-[140px] h-[56px] flex items-center justify-center bg-slate-100 rounded-2xl font-bold text-slate-500 disabled:opacity-30 hover:bg-slate-200 transition-all active:scale-[0.98] border border-slate-200 leading-none"
+                                >
+                                    SEBELUMNYA
+                                </button>
+                                {idx === examData.length - 1 ? (
+                                    <button 
+                                        onClick={finishExam}
+                                        className="flex-1 min-w-[140px] h-[56px] flex items-center justify-center bg-emerald-600 rounded-2xl font-bold text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-[0.98] leading-none"
+                                    >
+                                        SELESAI & KIRIM
+                                    </button>
+                                ) : (
+                                    <button 
+                                        onClick={() => setIdx(idx + 1)}
+                                        className="flex-1 min-w-[140px] h-[56px] flex items-center justify-center bg-blue-600 rounded-2xl font-bold text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-[0.98] leading-none"
+                                    >
+                                        SELANJUTNYA
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                {/* Sidebar Navigation */}
+                <aside className={`fixed inset-y-0 right-0 lg:relative ${showSidebar ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'} w-80 bg-white border-l transition-transform duration-300 z-40 flex flex-col shadow-2xl lg:shadow-none shrink-0`}>
+                    <div className="p-5 bg-slate-50 border-b flex justify-between items-center shrink-0">
+                        <h3 className="font-extrabold text-slate-700 tracking-tight uppercase text-xs">Navigasi Soal</h3>
+                        <button className="lg:hidden p-2 text-slate-400 hover:text-slate-600 text-2xl font-bold" onClick={() => setShowSidebar(false)}>×</button>
+                    </div>
+                    
+                    <div className="p-5 grid grid-cols-5 gap-2.5 overflow-y-auto custom-scrollbar flex-1 content-start">
+                        {examData.map((_, i) => {
+                            const sudahJawab = ans[i];
+                            const ragu = doubts[i];
+                            const isAktif = idx === i;
+                            
+                            let btnClass = "h-12 rounded-xl text-sm font-black flex items-center justify-center transition-all border-2 relative ";
+                            
+                            if (sudahJawab) {
+                                btnClass += "bg-blue-600 border-blue-600 text-white shadow-sm ";
+                            } else {
+                                btnClass += "bg-white border-slate-100 text-slate-300 hover:border-slate-300 ";
+                            }
+
+                            if (ragu) btnClass += "ring-4 ring-amber-500 ring-offset-1 !border-white ";
+                            if (isAktif) btnClass += "ring-2 ring-blue-400 ring-offset-2 scale-105 z-10 ";
+
+                            return (
+                                <button key={i} onClick={() => {setIdx(i); if(window.innerWidth < 1024) setShowSidebar(false);}} className={btnClass}>
+                                    {i + 1}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Legend & Footer Sidebar */}
+                    <div className="p-6 bg-slate-50 border-t space-y-4 shrink-0">
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+                                <div className="w-4 h-4 bg-white border-2 border-slate-200 rounded"></div>
+                                <span>Belum</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+                                <div className="w-4 h-4 bg-blue-600 rounded"></div>
+                                <span>Sudah</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+                                <div className="w-4 h-4 bg-amber-500 rounded ring-2 ring-amber-200"></div>
+                                <span>Ragu</span>
+                            </div>
+                        </div>
+                        <button onClick={finishExam} className="w-full mt-2 py-4 bg-slate-800 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-[0.98]">SUBMIT SEKARANG</button>
+                    </div>
+                </aside>
+
+                {/* Mobile Backdrop */}
+                {showSidebar && <div className="fixed inset-0 bg-slate-900/40 z-30 lg:hidden" onClick={() => setShowSidebar(false)}></div>}
+            </div>
+            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+            `}} />
+        </div>
+    );
+};
+
+export default App;
 
